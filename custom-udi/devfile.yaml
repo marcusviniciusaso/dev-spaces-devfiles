@@ -5,11 +5,11 @@ metadata:
   description: "Container com tools baseado na UDI com az/kubectl/helm/oc/cekit/kind/podman..."
   version: 1.0.2
   tags: ["openshift", "kubernetes", "helm", "podman", "azure"]
-attributes:
-  pod-overrides:
-    metadata:
-      annotations:
-        io.kubernetes.cri-o.Devices: "/dev/fuse,/dev/net/tun"
+# attributes:
+#   pod-overrides:
+#     metadata:
+#       annotations:
+#         io.kubernetes.cri-o.Devices: "/dev/fuse,/dev/net/tun"
 components:
   - name: tools
     attributes:
