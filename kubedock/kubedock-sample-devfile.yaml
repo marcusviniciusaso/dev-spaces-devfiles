@@ -34,8 +34,8 @@ components:
       cpuLimit: "2"
       cpuRequest: 200m
       env:
-        - name: KUBEDOCK_PARAMS
-          value: "--reverse-proxy --kubeconfig /home/user/.kube/config --initimage quay.io/agiertli/kubedock:0.13.0"
+        # - name: KUBEDOCK_PARAMS
+        #   value: "--reverse-proxy --kubeconfig /home/user/.kube/config --initimage quay.io/agiertli/kubedock:0.13.0"
         - name: USE_JAVA17
           value: "true"
         - value: /home/jboss/.m2
