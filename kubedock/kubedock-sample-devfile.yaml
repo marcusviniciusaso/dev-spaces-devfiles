@@ -16,6 +16,16 @@ components:
           value: "true"
       memoryLimit: 2Gi
       cpuLimit: 1000m
+  - name: kubedock
+    container:
+      image: quay.io/joyrex2001/kubedock:latest
+      args:
+        - server
+        - --address
+        - 0.0.0.0:2475
+        - --unprivileged
+        - --backend
+        - kubernetes
   # - name: tools
   #   container:
   #     image: quay.io/devfile/universal-developer-image:latest
