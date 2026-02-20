@@ -3,25 +3,10 @@ metadata:
   name: custom-base-udi
   displayName: "Custom Base UDI(Dev Spaces 3.22)"
   description: "Container com tools baseado na UDI com az/kubectl/helm/oc/cekit/kind/podman..."
-  version: 1.0.2
+  version: 1.0.3
   tags: ["openshift", "kubernetes", "helm", "podman", "azure"]
-attributes:
-  pod-overrides:
-    metadata:
-      annotations:
-        io.kubernetes.cri-o.Devices: "/dev/fuse,/dev/net/tun"
 components:
   - name: tools
-    # attributes:
-    #   pod-overrides:
-    #     metadata:
-    #       annotations:
-    #         io.kubernetes.cri-o.Devices: "/dev/fuse,/dev/net/tun"
-    #     spec:
-    #       hostUsers: false
-    #   container-overrides:
-    #     securityContext:
-    #       procMount: Unmasked
     container:
       image: quay.io/marolive/custom-udi:1.0.1
       mountSources: true
@@ -29,22 +14,6 @@ components:
       command: ["bash", "-lc", "sleep infinity"]
       memoryLimit: 4Gi
       cpuLimit: "2"
-      env:
-        - name: KUBEDOCK_PARAMS
-          value: "--reverse-proxy --kubeconfig /home/user/.kube/config --initimage quay.io/agiertli/kubedock:0.13.0"
-        - name: KUBEDOCK_ENABLED
-          value: 'true'
-        - name: DOCKER_HOST
-          value: 'tcp://127.0.0.1:2475'
-        - name: TESTCONTAINERS_RYUK_DISABLED
-          value: 'true'
-        - name: TESTCONTAINERS_CHECKS_DISABLE
-          value: 'true'
-      endpoints:
-        - exposure: none
-          name: kubedock
-          protocol: tcp
-          targetPort: 2475
 commands:
   - id: verify
     exec:
