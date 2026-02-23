@@ -58,6 +58,10 @@ commands:
         mkdir -p /home/user/persistent/.m2/repository
         mkdir -p /home/user/persistent/.gradle
       workingDir: /projects
+  - id: configure-yum-repo
+    exec:
+      component: tools
+      commandLine: "sed \"s|NEXUS_BASEURL_PLACEHOLDER|$NEXUS_BASEURL|g\" /etc/yum.repos.d/nexus-repo > /tmp/repo.tmp && cat /tmp/repo.tmp > /etc/yum.repos.d/nexus-repo"
   - id: configure-maven-repo
     exec:
       component: tools
@@ -65,5 +69,6 @@ commands:
 events:
   postStart:
     - setup-cache
+    - configure-yum-repo
     - configure-maven-repo
     - verify
