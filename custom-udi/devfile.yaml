@@ -14,6 +14,9 @@ components:
       command: ["bash", "-lc", "sleep infinity"]
       memoryLimit: 4Gi
       cpuLimit: "2"
+      env:
+        - name: NEXUS_BASEURL
+          value: "https://<NEXUSREPOSITORY>:8443/repository/public-yum-central"
 commands:
   - id: verify
     exec:
