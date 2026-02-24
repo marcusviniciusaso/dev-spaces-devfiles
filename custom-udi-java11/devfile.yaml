@@ -21,6 +21,10 @@ components:
           value: "-Dmaven.repo.local=/home/user/persistent/.m2/repository"
         - name: GRADLE_USER_HOME
           value: "/home/user/persistent/.gradle"
+        - name: NEXUS_BASEURL
+          value: "https://<NEXUSREPOSITORY>:8443/repository/public-yum-central"
+        - name: NEXUS_MAVEN_BASEURL
+          value: "https://<NEXUSREPOSITORY>:8443/repository/public-maven-central/"
       volumeMounts:
         - name: persistent-storage
           path: /home/user/persistent
