@@ -1,26 +1,16 @@
 schemaVersion: 2.2.0
 metadata:
   name: kubedock-sample-devfile
+  version: 1.0.0
 components:
   - name: tools
     container:
-      # image: quay.io/devfile/universal-developer-image:latest
-      # image: quay.io/devfile/universal-developer-image:ubi9-latest
-      # image: registry.redhat.io/devspaces/udi-rhel9:3.22
       image: quay.io/marolive/custom-udi:1.1.2
       memoryLimit: 8Gi
       memoryRequest: 1Gi
       cpuLimit: "2"
       cpuRequest: 200m
       env:
-        # - name: KUBEDOCK_PARAMS
-        #   value: "--reverse-proxy --kubeconfig /home/user/.kube/config --initimage quay.io/agiertli/kubedock:0.13.0"
-        # - name: USE_JAVA17
-        #   value: "true"
-        # - value: /home/jboss/.m2
-        #   name: MAVEN_CONFIG
-        # - value: -Xmx4G -Xss128M -XX:MetaspaceSize=1G -XX:MaxMetaspaceSize=2G
-        #   name: MAVEN_OPTS
         - name: KUBEDOCK_ENABLED
           value: 'true'
         - name: DOCKER_HOST
@@ -41,13 +31,3 @@ components:
           attributes:
             discoverable: true
             urlRewriteSupported: true
-        - exposure: internal
-          name: debug
-          protocol: http
-          targetPort: 5005
-      # volumeMounts:
-      #   - name: m2
-      #     path: /home/user/.m2
-  # - name: m2
-  #   volume:
-  #     size: 10G
