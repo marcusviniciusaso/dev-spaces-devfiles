@@ -50,7 +50,7 @@ commands:
     exec:
       component: tools
       commandLine: "sed \"s|NEXUS_BASEURL_PLACEHOLDER|$NEXUS_BASEURL|g\" /etc/yum.repos.d/nexus-repo > /tmp/repo.tmp && cat /tmp/repo.tmp > /etc/yum.repos.d/nexus-repo"
-events:
-  postStart:
-    - verify
-    # - configure-yum-repo
+# events:
+#   postStart:
+#     - verify
+#     - configure-yum-repo
