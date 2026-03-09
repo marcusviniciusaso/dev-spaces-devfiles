@@ -53,4 +53,4 @@ commands:
 events:
   postStart:
     - verify
-    - configure-yum-repo
+    # - configure-yum-repo
