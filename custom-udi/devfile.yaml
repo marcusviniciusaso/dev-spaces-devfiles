@@ -29,28 +29,3 @@ components:
           name: kubedock
           protocol: tcp
           targetPort: 2475
-# commands:
-#   - id: verify
-#     exec:
-#       component: tools
-#       commandLine: |
-#         set -euo pipefail
-#         echo "== /etc/devspaces-linux-release ==" && cat /etc/devspaces-linux-release
-#         echo "== oc/kubectl/helm/az/podman ==" 
-#         oc version --client
-#         kubectl version --client
-#         helm version
-#         az version | head -n 30
-#         podman version
-#       workingDir: /projects
-#       group:
-#         kind: run
-#         isDefault: true
-#   - id: configure-yum-repo
-#     exec:
-#       component: tools
-#       commandLine: "sed \"s|NEXUS_BASEURL_PLACEHOLDER|$NEXUS_BASEURL|g\" /etc/yum.repos.d/nexus-repo > /tmp/repo.tmp && cat /tmp/repo.tmp > /etc/yum.repos.d/nexus-repo"
-# events:
-#   postStart:
-#     - verify
-#     - configure-yum-repo
