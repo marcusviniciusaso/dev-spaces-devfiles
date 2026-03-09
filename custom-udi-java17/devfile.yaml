@@ -3,20 +3,27 @@ metadata:
   name: custom-udi-java17
   displayName: "Java 17 (Maven 3.9.9 / Gradle 8.14.4 / Spring Boot CLI 4.0.3)"
   description: "Java 17 para Maven 3.9.9, Gradle 8.14.4, Spring Boot CLI 4.0.3"
-  version: 1.0.0
+  version: 1.0.1
   tags: ["java", "spring", "maven", "gradle"]
 components:
   - name: tools
     container:
-      image: quay.io/marolive/custom-udi-java17:1.0.0
+      image: quay.io/marolive/custom-udi-java17:1.0.1
       mountSources: true
       sourceMapping: /projects
-      command: ["bash", "-lc", "sleep infinity"]
       memoryLimit: 2Gi
       memoryRequest: 1Gi
       cpuLimit: "1"
       cpuRequest: "0.5"
       env:
+        - name: KUBEDOCK_ENABLED
+          value: 'true'
+        - name: DOCKER_HOST
+          value: 'tcp://127.0.0.1:2475'
+        - name: TESTCONTAINERS_RYUK_DISABLED
+          value: 'true'
+        - name: TESTCONTAINERS_CHECKS_DISABLE
+          value: 'true'
         - name: MAVEN_OPTS
           value: "-Dmaven.repo.local=/home/user/persistent/.m2/repository"
         - name: GRADLE_USER_HOME
@@ -29,6 +36,10 @@ components:
         - name: persistent-storage
           path: /home/user/persistent
       endpoints:
+        - exposure: none
+          name: kubedock
+          protocol: tcp
+          targetPort: 2475
         - name: http-8080
           targetPort: 8080
           protocol: http
