@@ -16,6 +16,14 @@ components:
       cpuLimit: "1"
       cpuRequest: "0.5"
       env:
+        - name: KUBEDOCK_ENABLED
+          value: 'true'
+        - name: DOCKER_HOST
+          value: 'tcp://127.0.0.1:2475'
+        - name: TESTCONTAINERS_RYUK_DISABLED
+          value: 'true'
+        - name: TESTCONTAINERS_CHECKS_DISABLE
+          value: 'true'
         - name: MAVEN_OPTS
           value: "-Dmaven.repo.local=/home/user/persistent/.m2/repository"
         - name: GRADLE_USER_HOME
@@ -28,6 +36,10 @@ components:
         - name: persistent-storage
           path: /home/user/persistent
       endpoints:
+        - exposure: none
+          name: kubedock
+          protocol: tcp
+          targetPort: 2475
         - name: http-8080
           targetPort: 8080
           protocol: http
