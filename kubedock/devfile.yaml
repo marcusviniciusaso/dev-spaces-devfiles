@@ -1,11 +1,11 @@
 schemaVersion: 2.2.0
 metadata:
   name: kubedock-sample-devfile
-  version: 1.0.0
+  version: 1.0.1
 components:
   - name: tools
     container:
-      image: quay.io/marolive/custom-udi:1.1.2
+      image: quay.io/marolive/custom-udi:1.1.3
       memoryLimit: 8Gi
       memoryRequest: 1Gi
       cpuLimit: "2"
