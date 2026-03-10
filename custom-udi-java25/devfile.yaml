@@ -16,8 +16,6 @@ components:
       cpuLimit: "1"
       cpuRequest: "0.5"
       env:
-        - name: KUBEDOCK_PARAMS
-          value: "--reverse-proxy --kubeconfig /home/user/.kube/config --initimage quay.io/agiertli/kubedock:0.13.0"
         - name: KUBEDOCK_ENABLED
           value: 'true'
         - name: DOCKER_HOST
