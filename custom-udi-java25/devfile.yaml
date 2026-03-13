@@ -3,12 +3,12 @@ metadata:
   name: custom-udi-java25
   displayName: "Java 25 (Maven 3.9.12 / Gradle 9.3.1 / Spring Boot CLI 4.0.3)"
   description: "Java 25 para Maven 3.9.12, Gradle 9.3.1, Spring Boot CLI 4.0.3"
-  version: 1.0.3
+  version: 1.0.4
   tags: ["java", "spring", "maven", "gradle"]
 components:
   - name: tools
     container:
-      image: quay.io/marolive/custom-udi-java25:1.0.2
+      image: quay.io/marolive/custom-udi-java25:1.0.3
       mountSources: true
       sourceMapping: /projects
       memoryLimit: 2Gi
