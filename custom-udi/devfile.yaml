@@ -3,12 +3,12 @@ metadata:
   name: custom-base-udi
   displayName: "Custom Base UDI(Dev Spaces 3.22)"
   description: "Container com tools baseado na UDI com az/kubectl/helm/oc/cekit/kind/podman..."
-  version: 1.2.2
+  version: 1.2.3
   tags: ["openshift", "kubernetes", "helm", "podman", "azure"]
 components:
   - name: tools
     container:
-      image: quay.io/marolive/custom-udi:1.1.2
+      image: quay.io/marolive/custom-udi:1.2.0
       mountSources: true
       sourceMapping: /projects
       memoryLimit: 4Gi
