@@ -3,7 +3,7 @@ metadata:
   name: custom-udi-java25
   displayName: "Java 25 (Maven 3.9.12 / Gradle 9.3.1 / Spring Boot CLI 4.0.3)"
   description: "Java 25 para Maven 3.9.12, Gradle 9.3.1, Spring Boot CLI 4.0.3"
-  version: 1.0.2
+  version: 1.0.3
   tags: ["java", "spring", "maven", "gradle"]
 components:
   - name: tools
@@ -47,43 +47,3 @@ components:
   - name: persistent-storage
     volume:
       size: 1Gi
-commands:
-  - id: verify
-    exec:
-      component: tools
-      commandLine: |
-        set -euo pipefail
-        echo "== Java (default) =="
-        java -version
-        echo "JAVA_HOME=$JAVA_HOME"
-        echo ""
-        echo "== Maven/Gradle/Spring CLI =="
-        mvn -version | head -n 5
-        gradle --version | head -n 8
-        spring --version || true
-      workingDir: /projects
-      group:
-        kind: run
-        isDefault: true
-  - id: setup-cache
-    exec:
-      component: tools
-      commandLine: |
-        set -euo pipefail
-        mkdir -p /home/user/persistent/.m2/repository
-        mkdir -p /home/user/persistent/.gradle
-      workingDir: /projects
-  - id: configure-yum-repo
-    exec:
-      component: tools
-      commandLine: "sed \"s|NEXUS_BASEURL_PLACEHOLDER|$NEXUS_BASEURL|g\" /etc/yum.repos.d/nexus-repo > /tmp/repo.tmp && cat /tmp/repo.tmp > /etc/yum.repos.d/nexus-repo"
-  - id: configure-maven-repo
-    exec:
-      component: tools
-      commandLine: "sed \"s|NEXUS_MAVEN_BASEURL_PLACEHOLDER|$NEXUS_MAVEN_BASEURL|g\" ~/.m2/settings.xml > /tmp/repo-maven.tmp && cat /tmp/repo-maven.tmp > ~/.m2/settings.xml"
-events:
-  postStart:
-    - setup-cache
-    - configure-yum-repo
-    - configure-maven-repo
-    - verify
