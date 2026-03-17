@@ -24,6 +24,8 @@ components:
           value: 'true'
         - name: NEXUS_BASEURL
           value: "https://<NEXUSREPOSITORY>:8443/repository/public-yum-central"
+        - name: "PODMAN_IGNORE_CGROUPSV1_WARNING"
+          value: "true"
       endpoints:
         - exposure: none
           name: kubedock
