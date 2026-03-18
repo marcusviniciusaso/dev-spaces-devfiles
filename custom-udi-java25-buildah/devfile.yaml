@@ -3,7 +3,7 @@ metadata:
   name: custom-udi-java25-buildah
   displayName: "Java 25 (Maven 3.9.12 / Gradle 9.3.1 / Spring Boot CLI 4.0.3)"
   description: "Java 25 para Maven 3.9.12, Gradle 9.3.1, Spring Boot CLI 4.0.3"
-  version: 1.0.6
+  version: 1.0.0
   tags: ["java", "spring", "maven", "gradle"]
 components:
   - name: tools
