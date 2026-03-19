@@ -6,15 +6,6 @@ metadata:
   version: 1.0.6
   tags: ["java", "spring", "maven", "gradle"]
 components:
-  - name: local-registry
-    container:
-      image: quay.io/libpod/registry:2.8
-      memoryLimit: 512Mi
-      endpoints:
-        - name: registry
-          targetPort: 5000
-          exposure: internal
-          protocol: tcp
   - name: tools
     container:
       image: quay.io/marolive/custom-udi-java25:1.0.5
@@ -58,3 +49,59 @@ components:
   - name: persistent-storage
     volume:
       size: 1Gi
+  - name: local-registry
+    kubernetes:
+      deployByDefault: true
+      inlined: |
+        apiVersion: v1
+        kind: List
+        items:
+          - apiVersion: v1
+            kind: PersistentVolumeClaim
+            metadata:
+              name: local-registry-pvc
+            spec:
+              accessModes:
+                - ReadWriteOnce
+              resources:
+                requests:
+                  storage: 5Gi
+
+          - apiVersion: apps/v1
+            kind: Deployment
+            metadata:
+              name: local-registry
+            spec:
+              replicas: 1
+              selector:
+                matchLabels:
+                  app: local-registry
+              template:
+                metadata:
+                  labels:
+                    app: local-registry
+                spec:
+                  containers:
+                    - name: registry
+                      image: quay.io/libpod/registry:2.8.2
+                      ports:
+                        - containerPort: 5000
+                      volumeMounts:
+                        - name: registry-storage
+                          mountPath: /var/lib/registry
+                  volumes:
+                    - name: registry-storage
+                      persistentVolumeClaim:
+                        claimName: local-registry-pvc
+
+          - apiVersion: v1
+            kind: Service
+            metadata:
+              name: local-registry
+            spec:
+              selector:
+                app: local-registry
+              ports:
+                - name: registry
+                  port: 5000
+                  targetPort: 5000
