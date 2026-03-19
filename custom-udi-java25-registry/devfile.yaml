@@ -49,59 +49,62 @@ components:
   - name: persistent-storage
     volume:
       size: 1Gi
-  - name: local-registry
+  - name: local-registry-pvc
     kubernetes:
       deployByDefault: true
       inlined: |
         apiVersion: v1
-        kind: List
-        items:
-          - apiVersion: v1
-            kind: PersistentVolumeClaim
+        kind: PersistentVolumeClaim
+        metadata:
+          name: local-registry-pvc
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 5Gi
+  - name: local-registry-deploy
+    kubernetes:
+      deployByDefault: true
+      inlined: |
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: local-registry
+        spec:
+          replicas: 1
+          selector:
+            matchLabels:
+              app: local-registry
+          template:
             metadata:
-              name: local-registry-pvc
-            spec:
-              accessModes:
-                - ReadWriteOnce
-              resources:
-                requests:
-                  storage: 5Gi
-
-          - apiVersion: apps/v1
-            kind: Deployment
-            metadata:
-              name: local-registry
-            spec:
-              replicas: 1
-              selector:
-                matchLabels:
-                  app: local-registry
-              template:
-                metadata:
-                  labels:
-                    app: local-registry
-                spec:
-                  containers:
-                    - name: registry
-                      image: quay.io/libpod/registry:2.8.2
-                      ports:
-                        - containerPort: 5000
-                      volumeMounts:
-                        - name: registry-storage
-                          mountPath: /var/lib/registry
-                  volumes:
-                    - name: registry-storage
-                      persistentVolumeClaim:
-                        claimName: local-registry-pvc
-
-          - apiVersion: v1
-            kind: Service
-            metadata:
-              name: local-registry
-            spec:
-              selector:
+              labels:
                 app: local-registry
-              ports:
+            spec:
+              containers:
                 - name: registry
-                  port: 5000
-                  targetPort: 5000
+                  image: quay.io/libpod/registry:2.8.2
+                  ports:
+                    - containerPort: 5000
+                  volumeMounts:
+                    - name: registry-storage
+                      mountPath: /var/lib/registry
+              volumes:
+                - name: registry-storage
+                  persistentVolumeClaim:
+                    claimName: local-registry-pvc
+  - name: local-registry-service
+    kubernetes:
+      deployByDefault: true
+      inlined: |
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: local-registry
+        spec:
+          selector:
+            app: local-registry
+          ports:
+            - name: registry
+              port: 5000
+              targetPort: 5000
