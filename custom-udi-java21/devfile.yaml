@@ -32,6 +32,8 @@ components:
           value: "https://<NEXUSREPOSITORY>:8443/repository/public-yum-central"
         - name: NEXUS_MAVEN_BASEURL
           value: "https://<NEXUSREPOSITORY>:8443/repository/public-maven-central/"
+        - name: "PODMAN_IGNORE_CGROUPSV1_WARNING"
+          value: "true"
       volumeMounts:
         - name: persistent-storage
           path: /home/user/persistent
