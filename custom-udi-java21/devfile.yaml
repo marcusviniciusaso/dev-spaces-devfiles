@@ -3,12 +3,12 @@ metadata:
   name: custom-udi-java21
   displayName: "Java 21 (Maven 3.9.12 / Gradle 8.14.4 / Spring Boot CLI 4.0.3)"
   description: "Java 21 para Maven 3.9.12, Gradle 8.14.4, Spring Boot CLI 4.0.3"
-  version: 1.0.2
+  version: 1.0.3
   tags: ["java", "spring", "maven", "gradle"]
 components:
   - name: tools
     container:
-      image: quay.io/marolive/custom-udi-java21:1.0.2
+      image: quay.io/marolive/custom-udi-java21:1.0.4
       mountSources: true
       sourceMapping: /projects
       memoryLimit: 2Gi
