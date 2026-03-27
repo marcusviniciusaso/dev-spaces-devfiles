@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: registry
-          image: <REGISTRY_IMAGE>
+          image: quay.io/libpod/registry:2.8.2
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 5000
