@@ -1,0 +1,15 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: local-registry
+  labels:
+    app: local-registry
+spec:
+  to:
+    kind: Service
+    name: local-registry
+  port:
+    targetPort: registry
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
