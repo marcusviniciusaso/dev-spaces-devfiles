@@ -3,12 +3,12 @@ metadata:
   name: custom-udi-java25-registry
   displayName: "Java 25 (Maven 3.9.12 / Gradle 9.3.1 / Spring Boot CLI 4.0.3)"
   description: "Java 25 para Maven 3.9.12, Gradle 9.3.1, Spring Boot CLI 4.0.3"
-  version: 1.0.6
+  version: 1.0.7
   tags: ["java", "spring", "maven", "gradle"]
 components:
   - name: tools
     container:
-      image: quay.io/marolive/custom-udi-java25:1.0.5
+      image: quay.io/marolive/custom-udi-java25:1.0.7
       mountSources: true
       sourceMapping: /projects
       memoryLimit: 2Gi
@@ -46,30 +46,6 @@ components:
           targetPort: 8080
           protocol: http
           exposure: public
-  - name: local-registry
-    container:
-      image: quay.io/libpod/registry:2.8.2
-      mountSources: false
-      memoryRequest: 128Mi
-      memoryLimit: 512Mi
-      env:
-        - name: REGISTRY_HTTP_ADDR
-          value: 0.0.0.0:5000
-        - name: REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY
-          value: /var/lib/registry
-        - name: REGISTRY_STORAGE_DELETE_ENABLED
-          value: "true"
-      volumeMounts:
-        - name: registry-storage
-          path: /var/lib/registry
-      endpoints:
-        - name: registry-5000
-          targetPort: 5000
-          protocol: http
-          exposure: none
   - name: persistent-storage
     volume:
       size: 1Gi
-  - name: registry-storage
-    volume:
-      size: 5Gi
