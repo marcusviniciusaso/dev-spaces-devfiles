@@ -3,12 +3,12 @@ metadata:
   name: custom-udi-java17
   displayName: "Java 17 (Maven 3.9.9 / Gradle 8.14.4 / Spring Boot CLI 4.0.3)"
   description: "Java 17 para Maven 3.9.9, Gradle 8.14.4, Spring Boot CLI 4.0.3"
-  version: 1.0.5
+  version: 1.0.6
   tags: ["java", "spring", "maven", "gradle"]
 components:
   - name: tools
     container:
-      image: quay.io/marolive/custom-udi-java17:1.0.5
+      image: quay.io/marolive/custom-udi-java17:1.0.6
       mountSources: true
       sourceMapping: /projects
       memoryLimit: 2Gi
