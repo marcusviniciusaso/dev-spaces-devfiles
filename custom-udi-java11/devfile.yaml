@@ -3,12 +3,12 @@ metadata:
   name: custom-udi-java11
   displayName: "Java 11 (Maven 3.6.3 / Gradle 7.6.6 / Spring Boot CLI 2.7.18)"
   description: "Java 11 para Maven 3.6.3, Gradle 7.6.6, Spring Boot CLI 2.7.18"
-  version: 1.1.0
+  version: 1.1.1
   tags: ["java", "spring", "maven", "gradle"]
 components:
   - name: tools
     container:
-      image: quay.io/marolive/custom-udi-java11:1.0.0
+      image: quay.io/marolive/custom-udi-java11:1.0.1
       mountSources: true
       sourceMapping: /projects
       command: ["bash", "-lc", "sleep infinity"]
