@@ -3,13 +3,13 @@ metadata:
   name: custom-udi-node25
   displayName: "Node 25.7.0 (npm 11.10.1 / NestJS 11.0.16)"
   description: "Node 25.7.0 para npm 11.10.1 e NestJS 11.0.16"
-  version: 1.0.1
+  version: 1.0.2
   tags: ["nodejs", "npm", "nestjs"]
 
 components:
   - name: tools
     container:
-      image: quay.io/marolive/custom-udi-node25:1.0.2
+      image: quay.io/marolive/custom-udi-node25:1.0.3
       mountSources: true
       sourceMapping: /projects
       memoryLimit: 2Gi
