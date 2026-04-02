@@ -3,7 +3,7 @@ metadata:
   name: custom-udi-java25-test
   displayName: "Java 25 (Maven 3.9.12 / Gradle 9.3.1 / Spring Boot CLI 4.0.3)"
   description: "Java 25 para Maven 3.9.12, Gradle 9.3.1, Spring Boot CLI 4.0.3"
-  version: 1.0.8
+  version: 1.0.9
   tags: ["java", "spring", "maven", "gradle"]
 components:
   - name: tools
@@ -34,6 +34,8 @@ components:
           value: "https://<NEXUSREPOSITORY>:8443/repository/public-maven-central/"
         - name: "PODMAN_IGNORE_CGROUPSV1_WARNING"
           value: "true"
+        - name: DEFAULT_EXTENSIONS
+          value: .vscode/MermaidChart.vscode-mermaid-chart-2.6.2.vsix
       volumeMounts:
         - name: persistent-storage
           path: /home/user/persistent
