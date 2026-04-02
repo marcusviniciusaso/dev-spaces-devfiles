@@ -34,8 +34,6 @@ components:
           value: "https://<NEXUSREPOSITORY>:8443/repository/public-maven-central/"
         - name: "PODMAN_IGNORE_CGROUPSV1_WARNING"
           value: "true"
-        - name: DEFAULT_EXTENSIONS
-          value: .vscode/MermaidChart.vscode-mermaid-chart-2.6.2.vsix
       volumeMounts:
         - name: persistent-storage
           path: /home/user/persistent
