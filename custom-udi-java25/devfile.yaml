@@ -1,6 +1,6 @@
 schemaVersion: 2.2.0
 metadata:
-  generateName: custom-udi-java25-
+  generateName: custom-udi-java25
   displayName: "Java 25 (Maven 3.9.12 / Gradle 9.3.1 / Spring Boot CLI 4.0.3)"
   description: "Java 25 para Maven 3.9.12, Gradle 9.3.1, Spring Boot CLI 4.0.3"
   version: 1.0.9
