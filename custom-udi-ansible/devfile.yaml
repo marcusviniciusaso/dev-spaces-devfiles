@@ -1,0 +1,114 @@
+schemaVersion: 2.2.2
+metadata:
+  name: custom-udi-ansible
+  displayName: "Ansible (core 2.19.8), ansible-lint 26.4.0, ansible-navigator 26.4.0, molecule 26.4.0"
+  description: "Container com tools para Ansible"
+  version: 1.0.0
+  tags: ["ansible", "ansible-lint", "ansible-navigator", "molecule"]
+projects:
+  - name: ansible-devspaces-demo
+    zip:
+      location: http://devspaces-dashboard.devspaces.svc:8080/dashboard/api/airgap-sample/project/download?id=ansible
+components:
+  - name: tools
+    container:
+      image: quay.io/marolive/custom-udi-ansible:1.0.0
+      mountSources: true
+      sourceMapping: /projects
+      memoryRequest: 256M
+      memoryLimit: 6Gi
+      cpuRequest: 250m
+      cpuLimit: 2000m
+      args:
+        - tail
+        - '-f'
+        - /dev/null
+      env:
+        - name: ANSIBLE_COLLECTIONS_PATH
+          value: ~/.ansible/collections:/usr/share/ansible/collections:/projects/ansible-devspaces-demo/collections
+        - name: KUBEDOCK_ENABLED
+          value: 'true'
+        - name: DOCKER_HOST
+          value: 'tcp://127.0.0.1:2475'
+        - name: TESTCONTAINERS_RYUK_DISABLED
+          value: 'true'
+        - name: TESTCONTAINERS_CHECKS_DISABLE
+          value: 'true'
+        - name: NEXUS_BASEURL
+          value: "https://<NEXUSREPOSITORY>:8443/repository/public-yum-central"
+        - name: "PODMAN_IGNORE_CGROUPSV1_WARNING"
+          value: "true"
+      endpoints:
+        - exposure: none
+          name: kubedock
+          protocol: tcp
+          targetPort: 2475
+commands:
+  - id: molecule-create
+    exec:
+      label: '1.Molecule: start a test pod for the automation'
+      commandLine: source $HOME/.bashrc && molecule create
+      workingDir: ${PROJECTS_ROOT}/ansible-devspaces-demo/collections/ansible_collections/sample_namespace/sample_collection/extensions
+      group:
+        kind: run
+        isDefault: true
+      component: tools
+  - id: molecule-list
+    exec:
+      label: '2.Molecule: view the test instance that was created'
+      commandLine: source $HOME/.bashrc && molecule list
+      workingDir: ${PROJECTS_ROOT}/ansible-devspaces-demo/collections/ansible_collections/sample_namespace/sample_collection/extensions
+      group:
+        kind: run
+        isDefault: true
+      component: tools
+  - id: molecule-converge
+    exec:
+      label: '3.Molecule: apply the role to the pod'
+      commandLine: source $HOME/.bashrc && molecule converge
+      workingDir: ${PROJECTS_ROOT}/ansible-devspaces-demo/collections/ansible_collections/sample_namespace/sample_collection/extensions
+      group:
+        kind: run
+        isDefault: true
+      component: tools
+  - id: molecule-verify
+    exec:
+      label: '4.Molecule: run the verification against the test pod'
+      commandLine: source $HOME/.bashrc && molecule verify
+      workingDir: ${PROJECTS_ROOT}/ansible-devspaces-demo/collections/ansible_collections/sample_namespace/sample_collection/extensions
+      group:
+        kind: run
+        isDefault: true
+      component: tools
+  - id: molecule-destroy
+    exec:
+      label: '5.Molecule: reset the test pod back to a fresh instance'
+      commandLine: source $HOME/.bashrc && molecule destroy
+      workingDir: ${PROJECTS_ROOT}/ansible-devspaces-demo/collections/ansible_collections/sample_namespace/sample_collection/extensions
+      group:
+        kind: run
+        isDefault: true
+      component: tools
+  - id: molecule-test
+    exec:
+      label: '6.Molecule: run the full molecule test'
+      commandLine: source $HOME/.bashrc && molecule test
+      workingDir: ${PROJECTS_ROOT}/ansible-devspaces-demo/collections/ansible_collections/sample_namespace/sample_collection/extensions
+      group:
+        kind: run
+        isDefault: true
+      component: tools
+  - id: ansible-navigator
+    exec:
+      label: 'Ansible-Navigator: Start ansible-navigator'
+      commandLine: |
+        if [ ! -d "$HOME/.cache/ansible-navigator" ]; then
+          mkdir -p "$HOME/.cache/ansible-navigator"
+        fi
+        cp /usr/local/lib/python3.11/site-packages/ansible_navigator/data/catalog_collections.py $HOME/.cache/ansible-navigator
+        ansible-navigator --ee false
+      workingDir: ${PROJECTS_ROOT}/ansible-devspaces-demo
+      component: tools
+events:
+  preStop:
+    - molecule-destroy
