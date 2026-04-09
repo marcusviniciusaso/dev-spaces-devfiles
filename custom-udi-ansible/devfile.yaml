@@ -3,7 +3,7 @@ metadata:
   name: custom-udi-ansible
   displayName: "Ansible (core 2.19.8), ansible-lint 26.4.0, ansible-navigator 26.4.0, molecule 26.4.0"
   description: "Container com tools para Ansible"
-  version: 1.0.0
+  version: 1.0.1
   tags: ["ansible", "ansible-lint", "ansible-navigator", "molecule"]
 projects:
   - name: ansible-devspaces-demo
@@ -12,7 +12,7 @@ projects:
 components:
   - name: tools
     container:
-      image: quay.io/marolive/custom-udi-ansible:1.0.0
+      image: quay.io/marolive/custom-udi-ansible:1.0.1
       mountSources: true
       sourceMapping: /projects
       memoryRequest: 256M
