@@ -1,6 +1,6 @@
 schemaVersion: 2.2.0
 metadata:
-  name: custom-udi-node25
+  generateName: custom-udi-node25
   displayName: "Node 25.7.0 (npm 11.10.1 / NestJS 11.0.16)"
   description: "Node 25.7.0 com npm 11.10.1 e NestJS 11.0.16"
   version: 1.0.2

@@ -1,6 +1,6 @@
 schemaVersion: 2.2.2
 metadata:
-  name: custom-udi-python
+  generateName: custom-udi-python
   displayName: "Python 3.12.12 (pip 26.0.1 / virtualenv 21.2.4)"
   description: "Python 3.12.12 com pip 26.0.1 e virtualenv 21.2.4"
   version: 1.0.0
