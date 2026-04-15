@@ -3,7 +3,7 @@ metadata:
   generateName: custom-udi-node25
   displayName: "Node 25.7.0 (npm 11.10.1 / NestJS 11.0.16)"
   description: "Node 25.7.0 com npm 11.10.1 e NestJS 11.0.16"
-  version: 1.0.2
+  version: 1.0.3
   tags: ["nodejs", "npm", "nestjs"]
 components:
   - name: tools
