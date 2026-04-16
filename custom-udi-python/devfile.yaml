@@ -3,12 +3,12 @@ metadata:
   generateName: custom-udi-python
   displayName: "Python 3.12.12 (pip 26.0.1 / virtualenv 21.2.4)"
   description: "Python 3.12.12 com pip 26.0.1 e virtualenv 21.2.4"
-  version: 1.0.1
+  version: 1.0.2
   tags: ["python", "pip", "virtualenv"]
 components:
   - name: tools
     container:
-      image: quay.io/marolive/custom-udi-python:1.0.2
+      image: quay.io/marolive/custom-udi-python:1.0.3
       volumeMounts:
         - name: venv
           path: /home/user/.venv
