@@ -1,0 +1,60 @@
+schemaVersion: 2.2.2
+metadata:
+  generateName: sre-sample
+  displayName: "SRE Sample"
+  description: "Imagem SRE com a imagem custom-udi como base"
+  version: 1.0.0
+  tags: ["sre"]
+components:
+  - name: tools
+    container:
+      image: quay.io/marolive/custom-udi-sre:1.0.0
+      memoryLimit: 2Gi
+      memoryRequest: 1Gi
+      cpuLimit: '1'
+      cpuRequest: '0.5'
+      mountSources: true
+      env:
+        - name: KUBEDOCK_PARAMS
+          value: '--reverse-proxy --kubeconfig /home/user/.kube/config --initimage quay.io/agiertli/kubedock:0.13.0'
+        - name: KUBEDOCK_ENABLED
+          value: 'true'
+        - name: DOCKER_HOST
+          value: tcp://127.0.0.1:2475
+        - name: TESTCONTAINERS_RYUK_DISABLED
+          value: 'true'
+        - name: TESTCONTAINERS_CHECKS_DISABLE
+          value: 'true'
+        - name: NEXUS_BASEURL
+          value: "https://<NEXUSREPOSITORY>:8443/repository/public-yum-central"
+        - name: "PODMAN_IGNORE_CGROUPSV1_WARNING"
+          value: "true"
+      endpoints:
+        - exposure: none
+          name: kubedock
+          protocol: tcp
+          targetPort: 2475
+  - name: prometheus
+    container:
+      image: quay.io/prometheus/prometheus:latest
+      memoryLimit: 1Gi
+      endpoints:
+        - name: prometheus
+          targetPort: 9090
+          exposure: public
+          protocol: http
+      volumeMounts:
+        - name: prometheus-data
+          path: /prometheus
+  - name: prometheus-data
+    volume:
+      size: 1Gi
+  - name: grafana
+    container:
+      image: docker.io/grafana/grafana:latest
+      memoryLimit: 1Gi
+      endpoints:
+        - name: grafana
+          targetPort: 3000
+          exposure: public
+          protocol: http
