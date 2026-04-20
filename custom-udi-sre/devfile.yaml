@@ -3,12 +3,12 @@ metadata:
   generateName: sre-sample
   displayName: "SRE Sample"
   description: "Imagem SRE com a imagem custom-udi como base"
-  version: 1.0.0
+  version: 1.0.1
   tags: ["sre"]
 components:
   - name: tools
     container:
-      image: quay.io/marolive/custom-udi-sre:1.0.0
+      image: quay.io/marolive/custom-udi-sre:1.0.1
       memoryLimit: 2Gi
       memoryRequest: 1Gi
       cpuLimit: '1'
