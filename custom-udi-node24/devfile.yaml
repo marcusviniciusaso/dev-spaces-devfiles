@@ -1,0 +1,49 @@
+schemaVersion: 2.2.0
+metadata:
+  generateName: custom-udi-node24
+  displayName: "Node 24.15.0 (npm 11.12.1 / NestJS 11.0.16)"
+  description: "Node 24.15.0 com npm 11.12.1 e NestJS 11.0.16"
+  version: 1.0.0
+  tags: ["nodejs", "npm", "nestjs"]
+components:
+  - name: tools
+    container:
+      image: quay.io/marolive/custom-udi-node24:1.0.0
+      mountSources: true
+      sourceMapping: /projects
+      memoryLimit: 2Gi
+      memoryRequest: 1Gi
+      cpuLimit: "1"
+      cpuRequest: "0.5"
+      env:
+        - name: KUBEDOCK_ENABLED
+          value: 'true'
+        - name: DOCKER_HOST
+          value: 'tcp://127.0.0.1:2475'
+        - name: TESTCONTAINERS_RYUK_DISABLED
+          value: 'true'
+        - name: TESTCONTAINERS_CHECKS_DISABLE
+          value: 'true'
+        - name: NPM_CONFIG_CACHE
+          value: "/home/user/persistent/.npm"
+        - name: NEXUS_BASEURL
+          value: "https://<NEXUSREPOSITORY>:8443/repository/public-yum-central"
+        - name: NEXUS_NPM_BASEURL
+          value: "https://<NEXUSREPOSITORY>:8443/repository/public-npm-central/"
+        - name: "PODMAN_IGNORE_CGROUPSV1_WARNING"
+          value: "true"
+      volumeMounts:
+        - name: persistent-storage
+          path: /home/user/persistent
+      endpoints:
+        - exposure: none
+          name: kubedock
+          protocol: tcp
+          targetPort: 2475
+        - name: http-3000
+          targetPort: 3000
+          protocol: http
+          exposure: public
+  - name: persistent-storage
+    volume:
+      size: 1Gi
