@@ -21,17 +21,11 @@ components:
       volumeMounts:
         - name: venv
           path: /home/user/.venv
-        - name: containers-config
-          path: /home/user/.config/containers
-        - name: pip-config
-          path: /home/user/.config/pip
+        - name: container-storage
+          path: /home/user/.local/share/containers-vfs
       env:
         - name: PODMAN_IGNORE_CGROUPSV1_WARNING
           value: 'true'
-        - name: HOME
-          value: /home/user
-        - name: XDG_CONFIG_HOME
-          value: /home/user/.config
         - name: NEXUS_BASEURL
           value: "https://<NEXUSREPOSITORY>:8443/repository/public-yum-central"
         - name: NEXUS_PYPI_BASEURL
@@ -39,61 +33,6 @@ components:
   - name: venv
     volume:
       size: 1G
-  - name: containers-config
+  - name: container-storage
     volume:
-      size: 256Mi
-  - name: pip-config
-    volume:
-      size: 64Mi
-commands:
-  - id: init-home
-    exec:
-      component: tools
-      workingDir: /
-      commandLine: |
-        echo "== INIT START =="
-
-        mkdir -p /home/user/.config/containers
-        mkdir -p /home/user/.config/pip
-        mkdir -p /home/user/.local/share/containers-vfs/storage
-
-        RUNROOT="/tmp/containers-$(id -u)/runroot"
-        GRAPHROOT="/home/user/.local/share/containers-vfs/storage"
-        mkdir -p "$RUNROOT"
-
-        if [ ! -f /home/user/.config/containers/storage.conf ]; then
-        cat > /home/user/.config/containers/storage.conf <<EOF
-        [storage]
-        driver = "vfs"
-        runroot = "$RUNROOT"
-        graphroot = "$GRAPHROOT"
-
-        [storage.options]
-        additionalimagestores = []
-        EOF
-        echo "storage.conf criado com driver vfs"
-        fi
-
-        if [ ! -f /home/user/.config/pip/pip.conf ] && [ -n "${NEXUS_PYPI_BASEURL:-}" ]; then
-        TRUSTED_HOST=$(echo "$NEXUS_PYPI_BASEURL" | sed -E 's|https?://([^/:]+).*|\1|')
-        cat > /home/user/.config/pip/pip.conf <<EOF
-        [global]
-        index-url = ${NEXUS_PYPI_BASEURL}
-        trusted-host = ${TRUSTED_HOST}
-        timeout = 60
-        EOF
-        echo "pip.conf criado apontando para Nexus"
-        fi
-
-        chmod -R g+rwX /home/user/.config || true
-        chmod -R g+rwX /home/user/.local || true
-
-        echo "HOME=$HOME"
-        ls -ld /home/user
-        ls -ld /home/user/.config
-        ls -ld /home/user/.config/containers
-
-        echo "== INIT DONE =="
-events:
-  postStart:
-    - init-home
+      size: 1G
