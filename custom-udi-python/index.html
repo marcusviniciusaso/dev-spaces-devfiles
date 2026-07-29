@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UBI 9 Nginx Container</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            margin: 0;
+            padding: 40px;
+            background: #1e1e1e;
+            min-height: 100vh;
+            color: #d4d4d4;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #252526;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid #3c3c3c;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #569cd6;
+            font-weight: 600;
+        }
+        .subtitle {
+            text-align: center;
+            font-size: 1.2em;
+            color: #9cdcfe;
+            margin-bottom: 30px;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .info-card {
+            background: #2d2d30;
+            padding: 24px;
+            border-radius: 6px;
+            text-align: center;
+            border: 1px solid #3c3c3c;
+            transition: all 0.3s ease;
+        }
+        .info-card:hover {
+            background: #37373d;
+            border-color: #569cd6;
+            transform: translateY(-2px);
+        }
+        .info-card h3 {
+            margin: 0 0 12px 0;
+            color: #4ec9b0;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+        .info-card p {
+            margin: 8px 0;
+            color: #cccccc;
+            font-size: 0.95em;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #3c3c3c;
+            color: #8c8c8c;
+        }
+        .badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #0e639c;
+            color: #ffffff;
+            border-radius: 4px;
+            margin: 8px 4px;
+            font-size: 0.9em;
+            font-weight: 500;
+            transition: background 0.3s ease;
+        }
+        .badge:hover {
+            background: #1177bb;
+        }
+        .health-link {
+            color: #4fc1ff;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        .health-link:hover {
+            background: rgba(79, 193, 255, 0.1);
+            text-decoration: underline;
+        }
+        .highlight {
+            color: #dcdcaa;
+            font-weight: 600;
+        }
+        .success {
+            color: #4ec9b0;
+        }
+        .warning {
+            color: #ffd700;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Nginx on UBI 9!</h1>
+
+        <p class="subtitle">
+            This container is running nginx on <span class="highlight">Red Hat Universal Base Image 9</span>
+        </p>
+
+        <div class="info-grid">
+            <div class="info-card">
+                <h3>🐋 Container Runtime</h3>
+                <p>Built with <span class="success">Podman</span></p>
+                <p>Non-root execution</p>
+            </div>
+
+            <div class="info-card">
+                <h3>🌐 Web Server</h3>
+                <p><span class="success">Nginx</span> latest</p>
+                <p>Port <span class="warning">8080</span></p>
+            </div>
+
+            <div class="info-card">
+                <h3>🏗️ Base Image</h3>
+                <p><span class="success">UBI 9</span></p>
+                <p>Enterprise Ready</p>
+                <p>Red Hat certified</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>Health Check:</strong> <a href="/health" class="health-link">/health</a></p>
+        </div>
+    </div>
+</body>
+</html>
