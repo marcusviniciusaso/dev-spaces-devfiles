@@ -3,7 +3,7 @@ metadata:
   generateName: workspace-python
   displayName: Python Multi-Version (pip / virtualenv)
   description: Python com setup completo para DevSpaces
-  version: 2.0.0
+  version: 2.0.1
   tags:
     - python
     - pip
@@ -11,7 +11,7 @@ metadata:
 components:
   - name: tools
     container:
-      image: quay.io/marolive/custom-udi-python:2.0.0
+      image: quay.io/marolive/custom-udi-python:2.0.1
       memoryLimit: 2Gi
       memoryRequest: 1Gi
       cpuLimit: '2'
