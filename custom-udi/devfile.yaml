@@ -8,7 +8,7 @@ metadata:
 components:
   - name: tools
     container:
-      image: quay.io/marolive/custom-udi:3.0.7block
+      image: quay.io/marolive/custom-udi:3.0.7block2
       mountSources: true
       sourceMapping: /projects
       memoryLimit: 2Gi
