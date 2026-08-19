@@ -1,0 +1,73 @@
+schemaVersion: 2.2.0
+metadata:
+  name: custom-udi-java21-selenium
+  displayName: "Java 21 / Maven 3.9.12 / Chrome 151.0.7922.170 + Chromedriver (Selenium + Cucumber)"
+  description: "Java 21 com Selenium (Chrome headless) + Cucumber para testes automatizados no Dev Spaces"
+  version: 1.0.0
+  tags: ["java", "maven", "selenium", "cucumber", "testing"]
+components:
+  - name: tools
+    container:
+      image: quay.io/marolive/custom-udi-java21-selenium:1.0.0
+      mountSources: true
+      sourceMapping: /projects
+      # Recursos aumentados: Java LS + Cucumber LS + Test Runner + Chrome headless
+      # exigem mais que os 2Gi padrao; com 2Gi o extension host crashava com
+      # "Remote Extension host terminated unexpectedly 3 times within the last 5 minutes"
+      memoryLimit: 6Gi
+      memoryRequest: 3Gi
+      cpuLimit: "2"
+      cpuRequest: "1"
+      env:
+        - name: KUBEDOCK_ENABLED
+          value: 'true'
+        - name: DOCKER_HOST
+          value: 'tcp://127.0.0.1:2475'
+        - name: TESTCONTAINERS_RYUK_DISABLED
+          value: 'true'
+        - name: TESTCONTAINERS_CHECKS_DISABLE
+          value: 'true'
+        - name: MAVEN_OPTS
+          value: "-Dmaven.repo.local=/home/user/persistent/.m2/repository"
+        - name: NEXUS_BASEURL
+          value: "https://<NEXUSREPOSITORY>:8443/repository/public-yum-central"
+        - name: NEXUS_MAVEN_BASEURL
+          value: "https://<NEXUSREPOSITORY>:8443/repository/public-maven-central/"
+        - name: CHROME_BIN
+          value: "/usr/local/bin/chrome"
+        - name: WEBDRIVER_CHROME_DRIVER
+          value: "/usr/local/bin/chromedriver"
+        - name: SELENIUM_HEADLESS
+          value: "true"
+        - name: "PODMAN_IGNORE_CGROUPSV1_WARNING"
+          value: "true"
+      volumeMounts:
+        - name: persistent-storage
+          path: /home/user/persistent
+      endpoints:
+        - exposure: none
+          name: kubedock
+          protocol: tcp
+          targetPort: 2475
+        - name: http-8080
+          targetPort: 8080
+          protocol: http
+          exposure: public
+  - name: persistent-storage
+    volume:
+      size: 1Gi
+commands:
+  - id: validate-browser
+    exec:
+      label: "Validate Chrome headless"
+      component: tools
+      commandLine: |
+        chrome --version && chromedriver --version && chrome --headless=new --no-sandbox --disable-dev-shm-usage --dump-dom about:blank | head -1
+      workingDir: ${PROJECT_SOURCE}
+  - id: run-tests
+    exec:
+      label: "Run Selenium/Cucumber tests"
+      component: tools
+      commandLine: |
+        cd ${PROJECT_SOURCE}/custom-udi-java21-selenium/sample && mvn test
+      workingDir: ${PROJECT_SOURCE}
