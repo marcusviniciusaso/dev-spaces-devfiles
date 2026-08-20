@@ -119,7 +119,7 @@ Execute a task do devfile para comprovar Chrome headless funcionando:
 2. Ou pelo terminal:
 
 ```bash
-chrome --version && chromedriver --version && chrome --headless=new --no-sandbox --disable-dev-shm-usage --dump-dom about:blank | head -1
+chrome --version && chromedriver --version && chrome --headless=new --no-sandbox --disable-dev-shm-usage --disable-gpu --dump-dom about:blank 2>/dev/null | head -1
 ```
 
 **Resultado esperado:**

@@ -39,6 +39,8 @@ components:
           value: "/usr/local/bin/chromedriver"
         - name: SELENIUM_HEADLESS
           value: "true"
+        - name: DBUS_SESSION_BUS_ADDRESS
+          value: "/dev/null"
         - name: "PODMAN_IGNORE_CGROUPSV1_WARNING"
           value: "true"
       volumeMounts:
@@ -62,7 +64,7 @@ commands:
       label: "Validate Chrome headless"
       component: tools
       commandLine: |
-        chrome --version && chromedriver --version && chrome --headless=new --no-sandbox --disable-dev-shm-usage --dump-dom about:blank | head -1
+        chrome --version && chromedriver --version && chrome --headless=new --no-sandbox --disable-dev-shm-usage --disable-gpu --dump-dom about:blank 2>/dev/null | head -1
       workingDir: ${PROJECT_SOURCE}
   - id: run-tests
     exec:
