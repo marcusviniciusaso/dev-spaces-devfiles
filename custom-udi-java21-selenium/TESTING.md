@@ -1,90 +1,12 @@
-# Roteiro de Teste — Selenium + Cucumber no Dev Spaces
+# Roteiro de Validação — Selenium + Cucumber no Dev Spaces
 
-Este documento descreve o passo a passo completo para validar a imagem `custom-udi-java21-selenium` e o devfile associado em um ambiente OpenShift Dev Spaces 3.28.0.
-
----
-
-## 1. Build e push da imagem
-
-### 1.1 Build local
-
-```bash
-cd dev-spaces-images/java21-selenium
-
-podman-compose -f image/compose.yaml --env-file image/.env build
-```
-
-### 1.2 Validação local (Test)
-
-```bash
-podman run --rm quay.io/marolive/custom-udi-java21-selenium:1.0.0 bash -lc '
-  echo "== Java =="; java -version;
-  echo "== Maven =="; mvn -version | head -n 5;
-  echo "== Chrome =="; chrome --version;
-  echo "== Chromedriver =="; chromedriver --version;
-  echo "== Library check (must be empty) ==";
-  ldd /opt/chrome/current/chrome | grep "not found" || echo "OK: all libs resolved";
-  echo "== Headless smoke test ==";
-  chrome --headless=new --no-sandbox --disable-dev-shm-usage --disable-gpu --dump-dom about:blank | head -5;
-'
-```
-
-**Critérios de sucesso:**
-- `java -version` → OpenJDK 21
-- `mvn -version` → Apache Maven 3.9.12
-- `chrome --version` → Google Chrome for Testing 151.0.7922.170
-- `chromedriver --version` → ChromeDriver 151.0.7922.170
-- `ldd ... | grep "not found"` → saída vazia (todas as libs resolvidas)
-- Headless smoke test → imprime `<html><head></head><body></body></html>`
-
-### 1.3 Push para Quay.io
-
-```bash
-podman login quay.io
-
-podman-compose -f image/compose.yaml --env-file image/.env push
-```
+Este documento descreve o passo a passo para validar as extensões, o Chrome headless e os testes Selenium/Cucumber dentro de um workspace OpenShift Dev Spaces 3.28.0 usando a imagem `custom-udi-java21-selenium`.
 
 ---
 
-## 2. Commit e push dos repositórios
+## 1. Instalação e validação das extensões
 
-```bash
-# Repositório dev-spaces-images
-cd dev-spaces-images
-git add java21-selenium/
-git commit -m "feat: add java21-selenium image (Chrome 151.0.7922.170 + Maven 3.9.12)"
-git push origin main
-
-# Repositório dev-spaces-devfiles
-cd dev-spaces-devfiles
-git add custom-udi-java21-selenium/
-git commit -m "feat: add devfile + sample for Selenium/Cucumber testing"
-git push origin main
-```
-
----
-
-## 3. Criação do workspace
-
-Acesse o Dev Spaces usando a URL com apontamento para o devfile:
-
-```
-https://<devspaces-fqdn>#https://github.com/marcusviniciusaso/dev-spaces-devfiles?df=custom-udi-java21-selenium/devfile.yaml
-```
-
-Substitua `<devspaces-fqdn>` pelo FQDN da instância do Dev Spaces (ex: `devspaces.apps.cluster.example.com`).
-
-O workspace será criado com:
-- Imagem: `quay.io/marolive/custom-udi-java21-selenium:1.0.0`
-- Memória: 6Gi (limit) / 3Gi (request)
-- CPU: 2 cores (limit) / 1 core (request)
-
----
-
-## 4. Instalação e validação das extensões
-
-### 4.1 Instalar extensões
+### 1.1 Instalar extensões
 
 Ao abrir o workspace, o che-code deve sugerir as extensões de `.vscode/extensions.json`. Aceite a instalação ou instale manualmente pela view de Extensions:
 
@@ -97,7 +19,7 @@ Ao abrir o workspace, o che-code deve sugerir as extensões de `.vscode/extensio
 
 > **Nota**: Se o cluster usa registro Open VSX embedded ou espelho interno, verifique que essas extensões estão publicadas lá. Consultar `spec.components.pluginRegistry.openVSXURL` no CheCluster.
 
-### 4.2 Confirmar que o extension host NÃO crashou
+### 1.2 Confirmar que o extension host NÃO crashou
 
 1. Abra **Output** → selecionar **"Extension Host"** no dropdown
 2. Verificar que NÃO há mensagens de "terminated unexpectedly"
@@ -111,7 +33,7 @@ A saída deve estar vazia (sem eventos OOMKilled).
 
 ---
 
-## 5. Execução do `validate-browser`
+## 2. Execução do `validate-browser`
 
 Execute a task do devfile para comprovar Chrome headless funcionando:
 
@@ -131,7 +53,7 @@ ChromeDriver 151.0.7922.170
 
 ---
 
-## 6. Execução dos testes
+## 3. Execução dos testes
 
 Navegue até o diretório do sample:
 
@@ -139,7 +61,7 @@ Navegue até o diretório do sample:
 cd /projects/custom-udi-java21-selenium/sample
 ```
 
-### 6a. Via terminal / task `run-tests`
+### 3a. Via terminal / task `run-tests`
 
 ```bash
 mvn test
@@ -149,14 +71,14 @@ Ou: `Ctrl+Shift+P` → **Tasks: Run Task** → **devfile: Run Selenium/Cucumber 
 
 **Resultado esperado:** `BUILD SUCCESS`, todos os testes passam.
 
-### 6b. Via Test Runner for Java (ícones de play)
+### 3b. Via Test Runner for Java (ícones de play)
 
 1. Abra a view **Testing** (ícone de beaker na barra lateral)
 2. Os testes `SmokeSeleniumTest` e `RunCucumberTest` devem aparecer
 3. Clique no ícone de play (▶) para executar todos ou individualmente
 4. Verifique check verde em cada teste
 
-### 6c. Via extensão Cucumber
+### 3c. Via extensão Cucumber
 
 1. Abra o arquivo `smoke.feature`
 2. Ícones de play (▶) devem aparecer ao lado de cada `Scenario`
@@ -165,7 +87,7 @@ Ou: `Ctrl+Shift+P` → **Tasks: Run Task** → **devfile: Run Selenium/Cucumber 
 
 ---
 
-## 7. Troubleshooting
+## 4. Troubleshooting
 
 ### OOM do extension host
 
