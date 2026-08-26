@@ -1,0 +1,100 @@
+schemaVersion: 2.2.0
+metadata:
+  name: custom-udi-qa
+  displayName: "QA — Java 8/11/17/21/25 (default 21) / Maven 3.9.12 / Chrome 152.0.7977.64 + Chromedriver / JMeter 5.6.3"
+  description: "Workspace de QA: Selenium (Chrome headless) + Cucumber e Apache JMeter non-GUI, com cinco JDKs lado a lado"
+  version: 1.0.0
+  tags: ["java", "maven", "selenium", "cucumber", "jmeter", "qa", "testing"]
+components:
+  - name: tools
+    container:
+      image: quay.io/marolive/custom-udi-qa:1.0.0
+      mountSources: true
+      sourceMapping: /projects
+      # Recursos aumentados: Java LS + Cucumber LS + Test Runner + Chrome headless
+      # + JMeter non-GUI exigem mais que os 2Gi padrao; com 2Gi o extension host
+      # crashava com "Remote Extension host terminated unexpectedly 3 times within
+      # the last 5 minutes". A GUI do JMeter nao roda no workspace (container headless).
+      memoryLimit: 6Gi
+      memoryRequest: 3Gi
+      cpuLimit: "2"
+      cpuRequest: "1"
+      env:
+        - name: KUBEDOCK_ENABLED
+          value: 'true'
+        - name: DOCKER_HOST
+          value: 'tcp://127.0.0.1:2475'
+        - name: TESTCONTAINERS_RYUK_DISABLED
+          value: 'true'
+        - name: TESTCONTAINERS_CHECKS_DISABLE
+          value: 'true'
+        - name: MAVEN_OPTS
+          value: "-Dmaven.repo.local=/home/user/persistent/.m2/repository"
+        - name: NEXUS_BASEURL
+          value: "https://<NEXUSREPOSITORY>:8443/repository/public-yum-central"
+        - name: NEXUS_MAVEN_BASEURL
+          value: "https://<NEXUSREPOSITORY>:8443/repository/public-maven-central/"
+        - name: CHROME_BIN
+          value: "/usr/local/bin/chrome"
+        - name: WEBDRIVER_CHROME_DRIVER
+          value: "/usr/local/bin/chromedriver"
+        - name: SELENIUM_HEADLESS
+          value: "true"
+        - name: DBUS_SESSION_BUS_ADDRESS
+          value: "/dev/null"
+        - name: "PODMAN_IGNORE_CGROUPSV1_WARNING"
+          value: "true"
+      volumeMounts:
+        - name: persistent-storage
+          path: /home/user/persistent
+      endpoints:
+        - exposure: none
+          name: kubedock
+          protocol: tcp
+          targetPort: 2475
+        - name: http-8080
+          targetPort: 8080
+          protocol: http
+          exposure: public
+  - name: persistent-storage
+    volume:
+      size: 1Gi
+commands:
+  - id: validate-java
+    exec:
+      label: "Validate JDKs (8/11/17/21/25)"
+      component: tools
+      commandLine: |
+        bash -lc 'for v in 8 11 17 21 25; do echo "-- Java $v --"; use-java $v; done; echo "-- default --"; bash -lc "java -version"'
+      workingDir: ${PROJECT_SOURCE}
+  - id: validate-browser
+    exec:
+      label: "Validate Chrome headless"
+      component: tools
+      commandLine: |
+        chrome --version && chromedriver --version && chrome --headless=new --no-sandbox --disable-dev-shm-usage --disable-gpu --dump-dom about:blank 2>/dev/null | head -1
+      workingDir: ${PROJECT_SOURCE}
+  - id: validate-jmeter
+    exec:
+      label: "Validate JMeter (non-GUI, sem egress)"
+      component: tools
+      commandLine: |
+        JMETER_SHOW_JVM=true jmeter -v 2>&1 | head -n 12
+        cd ${PROJECT_SOURCE}/custom-udi-qa/sample
+        with-java 21 jwebserver -p 8000 -b 127.0.0.1 -d "$PWD/src/test/resources" > /tmp/jwebserver.log 2>&1 &
+        WEB_PID=$!
+        sleep 3
+        rm -f /tmp/jmeter-result.jtl
+        jmeter -n -t jmeter/smoke-plan.jmx -l /tmp/jmeter-result.jtl -j /tmp/jmeter.log
+        RC=$?
+        kill $WEB_PID 2>/dev/null
+        echo "-- resultado --"; cat /tmp/jmeter-result.jtl
+        exit $RC
+      workingDir: ${PROJECT_SOURCE}
+  - id: run-tests
+    exec:
+      label: "Run Selenium/Cucumber tests"
+      component: tools
+      commandLine: |
+        cd ${PROJECT_SOURCE}/custom-udi-qa/sample && mvn test
+      workingDir: ${PROJECT_SOURCE}

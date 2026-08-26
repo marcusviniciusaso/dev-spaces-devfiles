@@ -1,0 +1,26 @@
+{
+  "java.jdt.ls.java.home": "/usr/lib/jvm/java-21-openjdk",
+  "java.configuration.runtimes": [
+    {
+      "name": "JavaSE-1.8",
+      "path": "/usr/lib/jvm/java-1.8.0-openjdk"
+    },
+    {
+      "name": "JavaSE-11",
+      "path": "/usr/lib/jvm/java-11-openjdk"
+    },
+    {
+      "name": "JavaSE-17",
+      "path": "/usr/lib/jvm/java-17-openjdk"
+    },
+    {
+      "name": "JavaSE-21",
+      "path": "/usr/lib/jvm/java-21-openjdk",
+      "default": true
+    },
+    {
+      "name": "JavaSE-25",
+      "path": "/usr/lib/jvm/java-25-openjdk"
+    }
+  ]
+}
