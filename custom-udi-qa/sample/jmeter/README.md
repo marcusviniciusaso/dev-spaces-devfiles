@@ -22,16 +22,24 @@ servida por um `jwebserver` local — o servidor HTTP que acompanha o próprio J
 cd /projects/dev-spaces-devfiles/custom-udi-qa/sample
 
 # 1. Sobe o servidor local (JDK 21) servindo as páginas de teste
-with-java 21 jwebserver -p 8000 -b 127.0.0.1 -d "$PWD/src/test/resources" &
+with-java 21 jwebserver -p 8000 -b 127.0.0.1 -d "$PWD/src/test/resources" > /tmp/jwebserver.log 2>&1 &
+WEB_PID=$!
+sleep 3
+kill -0 $WEB_PID 2>/dev/null || { echo "jwebserver nao subiu:"; cat /tmp/jwebserver.log; }
 
 # 2. Roda o plano em modo non-GUI
+rm -f /tmp/jmeter-result.jtl
 jmeter -n -t jmeter/smoke-plan.jmx -l /tmp/jmeter-result.jtl -j /tmp/jmeter.log
 
 # 3. Derruba o servidor
-kill %1
+kill $WEB_PID
 ```
 
-Ou, pelo devfile: `Ctrl+Shift+P` → **Tasks: Run Task** → **devfile: Validate JMeter (non-GUI, sem egress)**.
+> **Sempre derrube o servidor no fim.** Um `jwebserver` esquecido continua segurando a porta 8000: a
+> próxima execução falha silenciosamente com `BindException: Address already in use` e o plano roda
+> contra o servidor antigo — que pode estar servindo outro diretório. Use `$WEB_PID` em vez de
+> `kill %1`, porque o número do job muda conforme os processos já em background no terminal.
+> Para limpar um servidor órfão: `pkill -f "jwebserver -p 8000"`.
 
 Saída esperada: `summary = 10 in 00:00:0X ... Err: 0 (0.00%)` e um `.jtl` com `success=true` em
 todas as linhas.

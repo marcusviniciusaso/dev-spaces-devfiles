@@ -15,9 +15,14 @@ usando a imagem `custom-udi-qa`.
 https://<devspaces-fqdn>#https://github.com/marcusviniciusaso/dev-spaces-devfiles?df=custom-udi-qa/devfile.yaml
 ```
 
-O repositório é clonado em `/projects/dev-spaces-devfiles`; o sample fica em
-`/projects/dev-spaces-devfiles/custom-udi-qa/sample` (é para onde `${PROJECT_SOURCE}/custom-udi-qa/sample`
-aponta nas tasks do devfile).
+O repositório é clonado em `/projects/dev-spaces-devfiles`; o sample deste roteiro fica em:
+
+```bash
+cd /projects/dev-spaces-devfiles/custom-udi-qa/sample
+```
+
+Todas as validações abaixo são comandos de terminal — o devfile não declara `commands`, para não
+duplicar o que já está documentado aqui e no `README.md` da imagem.
 
 ---
 
@@ -55,10 +60,6 @@ A saída deve estar vazia (sem eventos OOMKilled).
 ---
 
 ## 3. Validação dos JDKs
-
-Execute a task do devfile: `Ctrl+Shift+P` → **Tasks: Run Task** → **devfile: Validate JDKs (8/11/17/21/25)**.
-
-Ou pelo terminal:
 
 ```bash
 for v in 8 11 17 21 25; do echo "-- Java $v --"; use-java $v; done
@@ -100,12 +101,7 @@ as cinco runtimes aparecem, com **JavaSE-21 como default**. Elas vêm de `sample
 
 ## 4. Teste de frontend — Selenium + Cucumber
 
-### 4.1 Execução do `validate-browser`
-
-Execute a task do devfile para comprovar Chrome headless funcionando:
-
-1. Pressione `Ctrl+Shift+P` → **Tasks: Run Task** → **devfile: Validate Chrome headless**
-2. Ou pelo terminal:
+### 4.1 Validação do Chrome headless
 
 ```bash
 chrome --version && chromedriver --version && chrome --headless=new --no-sandbox --disable-dev-shm-usage --disable-gpu --dump-dom about:blank 2>/dev/null | head -1
@@ -123,16 +119,14 @@ ChromeDriver 152.0.7977.64
 Navegue até o diretório do sample:
 
 ```bash
-cd ${PROJECT_SOURCE}/custom-udi-qa/sample
+cd /projects/dev-spaces-devfiles/custom-udi-qa/sample
 ```
 
-#### 4.2a Via terminal / task `run-tests`
+#### 4.2a Via terminal
 
 ```bash
 mvn test
 ```
-
-Ou: `Ctrl+Shift+P` → **Tasks: Run Task** → **devfile: Run Selenium/Cucumber tests**
 
 **Resultado esperado:** `BUILD SUCCESS`, todos os testes passam.
 
@@ -154,29 +148,31 @@ Ou: `Ctrl+Shift+P` → **Tasks: Run Task** → **devfile: Run Selenium/Cucumber 
 
 ## 5. Teste de performance — JMeter
 
-### 5.1 Execução do `validate-jmeter`
+### 5.1 Smoke test non-GUI
 
-`Ctrl+Shift+P` → **Tasks: Run Task** → **devfile: Validate JMeter (non-GUI, sem egress)**
+Sobe um `jwebserver` local servindo `sample/src/test/resources`, roda `jmeter/smoke-plan.jmx` e
+derruba o servidor:
 
-A task sobe um `jwebserver` local servindo `sample/src/test/resources`, roda `jmeter/smoke-plan.jmx`
-e derruba o servidor.
+```bash
+cd /projects/dev-spaces-devfiles/custom-udi-qa/sample
+with-java 21 jwebserver -p 8000 -b 127.0.0.1 -d "$PWD/src/test/resources" > /tmp/jwebserver.log 2>&1 &
+WEB_PID=$!
+sleep 3
+kill -0 $WEB_PID 2>/dev/null || { echo "jwebserver nao subiu:"; cat /tmp/jwebserver.log; }
+rm -f /tmp/jmeter-result.jtl
+jmeter -n -t jmeter/smoke-plan.jmx -l /tmp/jmeter-result.jtl -j /tmp/jmeter.log
+kill $WEB_PID
+```
 
 **Resultado esperado:**
 ```
-[jmeter] JAVA_HOME=/usr/lib/jvm/java-21-openjdk
 summary =     10 in 00:00:02 =    4.9/s Avg:    89 Min:     6 Max:   411 Err:     0 (0.00%)
 ```
 E um `.jtl` com `success=true` (coluna 8) em todas as 10 linhas.
 
-Equivalente pelo terminal:
-
-```bash
-cd ${PROJECT_SOURCE}/custom-udi-qa/sample
-with-java 21 jwebserver -p 8000 -b 127.0.0.1 -d "$PWD/src/test/resources" &
-rm -f /tmp/jmeter-result.jtl
-jmeter -n -t jmeter/smoke-plan.jmx -l /tmp/jmeter-result.jtl -j /tmp/jmeter.log
-kill %1
-```
+> Encerre sempre o servidor com `kill $WEB_PID`. Um `jwebserver` órfão segura a porta 8000 e faz a
+> próxima execução testar o servidor antigo — ver *`jwebserver` não sobe / porta 8000 ocupada* no
+> troubleshooting.
 
 ### 5.2 Confirmar que o JMeter roda no JDK 21
 
@@ -224,6 +220,47 @@ Detalhes adicionais em `sample/jmeter/README.md`.
 - Para teste rápido, subir memória via query param na URL: `?memoryLimit=8Gi`
 - Verificar eventos OOM: `oc get events -n <ns> --field-selector reason=OOMKilled`
 
+### Mensagens de erro do Chrome que NÃO são falha
+
+**Sintoma:** ao rodar o Chrome sem filtrar o stderr, aparecem dezenas de linhas `ERROR:` — e mesmo
+assim o comando termina bem.
+
+```
+ERROR:dbus/bus.cc:405] Failed to connect to the bus: Address does not contain a colon
+ERROR:dbus/bus.cc:405] Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+ERROR:ui/gl/angle_platform_impl.cc:48] DisplayVkXcb.cpp:59 (initialize): xcb_connect() failed, error 1
+ERROR:ui/gl/gl_display.cc:630] eglInitialize SwANGLE failed with error EGL_NOT_INITIALIZED
+ERROR:components/viz/service/main/viz_main_impl.cc:190] Exiting GPU process due to errors during initialization
+ERR: DisplayVkXcb.cpp:59 (initialize): xcb_connect() failed, error 1
+ERR: Display.cpp:1115 (initialize): ANGLE Display::initialize error 0: Not initialized.
+```
+
+> As linhas `ERR:` (sem o `OR`) vêm do próprio ANGLE, não do logger do Chrome — por isso um
+> `grep "ERROR:"` não as encontra.
+
+**Isso é normal e esperado num container headless:**
+
+- as linhas de **D-Bus** acontecem porque não há daemon D-Bus no pod (a env
+  `DBUS_SESSION_BUS_ADDRESS=/dev/null` é a convenção usada para desativá-lo, e o "does not contain a
+  colon" é justamente o Chrome reclamando desse valor);
+- as linhas de **ANGLE/EGL/xcb** acontecem porque, mesmo com `--disable-gpu`, o Chrome sobe um
+  processo de GPU que não encontra X11, falha e encerra — a renderização cai para software.
+
+**O critério de sucesso é a saída no stdout**, não a ausência de `ERROR:`:
+
+```
+<html><head></head><body></body></html>
+```
+
+Por isso os comandos deste roteiro usam `2>/dev/null`. O mesmo ruído
+aparece no output de `mvn test`, vindo do chromedriver — **não significa teste quebrado**; olhe o
+resultado do Surefire / da view Testing.
+
+**Quando investigar de verdade:** se o `<html>` **não** for impresso. Aí rode sem o `2>/dev/null` e
+procure por erro de shared library (ver *Biblioteca faltante*), por
+`Failed to create headless user data directory container` (`$HOME` sem escrita — use
+`--user-data-dir=/tmp/chrome-profile`) ou por crash de `/dev/shm` (abaixo).
+
 ### Crash do Chrome por /dev/shm
 
 **Sintoma:** Chrome crash imediato ou "session not created" do Selenium.
@@ -259,6 +296,30 @@ ldd /opt/chrome/current/chrome | grep "not found"
 - O Selenium Manager (4.6+) só baixa driver quando não encontra um configurado
 - Garantir que `webdriver.chrome.driver` está setado (o `WebDriverFactory` do sample lê a env
   `WEBDRIVER_CHROME_DRIVER`, definida no devfile e na imagem)
+
+### `jwebserver` não sobe / porta 8000 ocupada
+
+**Sintoma:** no terminal aparece `[2]+  Exit 2` logo depois de subir o `jwebserver`, mas o plano do
+JMeter roda e passa mesmo assim. Em `/tmp/jwebserver.log`:
+
+```
+Error: server config failed: java.net.BindException: Address already in use
+```
+
+**Causa:** sobrou um `jwebserver` de uma execução anterior segurando a porta 8000. O novo morre e o
+JMeter acaba testando **o servidor antigo**.
+
+**Por que importa:** é um falso positivo. Se o servidor órfão estiver servindo outro diretório, o
+plano passa a testar a página errada — ou falha com 404 e parece defeito do JMeter.
+
+**Correção:**
+```bash
+pkill -f "jwebserver -p 8000"     # derruba o órfão
+```
+
+E sempre encerre o servidor ao final, capturando o PID (`WEB_PID=$!` … `kill $WEB_PID`) em vez de
+`kill %1` — o número do job muda conforme os processos já em background no terminal. O bloco da
+seção 5.1 já faz isso e avisa se a porta estiver ocupada.
 
 ### JMeter rodando no Java errado
 

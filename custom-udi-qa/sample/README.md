@@ -54,9 +54,9 @@ src/test/
 mvn test
 
 # Smoke test do JMeter — ver jmeter/README.md
-with-java 21 jwebserver -p 8000 -b 127.0.0.1 -d "$PWD/src/test/resources" &
+with-java 21 jwebserver -p 8000 -b 127.0.0.1 -d "$PWD/src/test/resources" & WEB_PID=$!
 jmeter -n -t jmeter/smoke-plan.jmx -l /tmp/jmeter-result.jtl -j /tmp/jmeter.log
-kill %1
+kill $WEB_PID
 ```
 
 ## Sobre a versão do Java
