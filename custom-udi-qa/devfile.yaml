@@ -1,6 +1,6 @@
 schemaVersion: 2.2.0
 metadata:
-  name: custom-udi-qa
+  generateName: custom-udi-qa
   displayName: "QA — Java 8/11/17/21/25 (default 21) / Maven 3.9.12 / Chrome 152.0.7977.64 + Chromedriver / JMeter 5.6.3"
   description: "Workspace de QA: Selenium (Chrome headless) + Cucumber e Apache JMeter non-GUI, com cinco JDKs (8, 11, 17, 21 e 25) e Maven 3.9.12."
   version: 1.0.0
