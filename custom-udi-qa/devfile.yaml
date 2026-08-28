@@ -3,12 +3,12 @@ metadata:
   generateName: custom-udi-qa
   displayName: "QA — Java 8/11/17/21/25 (default 21) / Maven 3.9.12 / Chrome 152.0.7977.64 + Chromedriver / JMeter 5.6.3"
   description: "Workspace de QA: Selenium (Chrome headless) + Cucumber e Apache JMeter non-GUI, com cinco JDKs (8, 11, 17, 21 e 25) e Maven 3.9.12."
-  version: 1.0.0
+  version: 1.0.1
   tags: ["java", "maven", "selenium", "cucumber", "jmeter", "qa", "testing"]
 components:
   - name: tools
     container:
-      image: quay.io/marolive/custom-udi-qa:1.0.0
+      image: quay.io/marolive/custom-udi-qa:1.0.1
       mountSources: true
       sourceMapping: /projects
       memoryLimit: 6Gi
@@ -16,12 +16,32 @@ components:
       cpuLimit: "2"
       cpuRequest: "1"
       env:
+        - name: PODMAN_IGNORE_CGROUPSV1_WARNING
+          value: "true"
+        - name: CONTAINERS_STORAGE_CONF
+          value: /home/user/persistent/.containers-storage.conf
+        - name: CONTAINERS_STORAGE
+          value: /home/user/persistent/.containers-storage
+        - name: PODMAN_HOME
+          value: /home/user/persistent/.podman
         - name: MAVEN_OPTS
-          value: "-Dmaven.repo.local=/home/user/persistent/.m2/repository"
-        - name: NEXUS_BASEURL
-          value: "https://<NEXUSREPOSITORY>:8443/repository/public-yum-central"
-        - name: NEXUS_MAVEN_BASEURL
-          value: "https://<NEXUSREPOSITORY>:8443/repository/public-maven-central/"
+          value: "-Dmaven.repo.local=/home/user/persistent/.m2/repository -Duser.home=/home/user/persistent"
+        - name: MAVEN_USER_HOME
+          value: /home/user/persistent
+        - name: GRADLE_USER_HOME
+          value: "/home/user/persistent/.gradle"
+        - name: XDG_CONFIG_HOME
+          value: /home/user/persistent/.config
+        - name: XDG_DATA_HOME
+          value: /home/user/persistent/.local/share
+        - name: XDG_CACHE_HOME
+          value: /home/user/persistent/.cache
+        - name: VSCODE_AGENT_FOLDER
+          value: /home/user/persistent/.vscode-server
+        - name: ARTIFACTORY_BASEURL
+          value: "https://<ARTIFACTORYREPOSITORY>/artifactory/public-yum-central"
+        - name: ARTIFACTORY_MAVEN_BASEURL
+          value: "https://<ARTIFACTORYREPOSITORY>/artifactory/public-maven-central/"
         - name: CHROME_BIN
           value: "/usr/local/bin/chrome"
         - name: WEBDRIVER_CHROME_DRIVER
@@ -30,11 +50,9 @@ components:
           value: "true"
         - name: DBUS_SESSION_BUS_ADDRESS
           value: "/dev/null"
-        - name: "PODMAN_IGNORE_CGROUPSV1_WARNING"
-          value: "true"
       volumeMounts:
         - name: persistent-storage
           path: /home/user/persistent
   - name: persistent-storage
     volume:
-      size: 1Gi
+      size: 10Gi
