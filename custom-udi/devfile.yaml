@@ -19,22 +19,6 @@ components:
         - name: persistent-storage
           path: /home/user/persistent
       env:
-        - name: CONTAINERS_STORAGE_CONF
-          value: /home/user/persistent/.containers-storage.conf
-        - name: CONTAINERS_STORAGE
-          value: /home/user/persistent/.containers-storage
-        - name: PODMAN_HOME
-          value: /home/user/persistent/.podman
-        - name: XDG_CONFIG_HOME
-          value: /home/user/persistent/.config
-        - name: XDG_DATA_HOME
-          value: /home/user/persistent/.local/share
-        - name: XDG_CACHE_HOME
-          value: /home/user/persistent/.cache
-        - name: VSCODE_AGENT_FOLDER
-          value: /home/user/persistent/.vscode-server
-        - name: ARTIFACTORY_BASEURL
-          value: "https://<REPOSITORY>/artifactory/public-yum-central"
         - name: "PODMAN_IGNORE_CGROUPSV1_WARNING"
           value: "true"
   - name: persistent-storage
