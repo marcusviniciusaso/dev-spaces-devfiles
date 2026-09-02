@@ -1,0 +1,55 @@
+schemaVersion: 2.2.2
+metadata:
+  name: custom-udi-java8
+  displayName: "Java 8 (Maven 3.9.9 / Gradle 7.6.6 / Spring Boot CLI 2.7.18)"
+  description: "Java 8 para Maven 3.9.9, Gradle 7.6.6, Spring Boot CLI 2.7.18"
+  version: 1.0.0
+  tags: ["java", "spring", "maven", "gradle"]
+components:
+  - name: tools
+    container:
+      image: quay.io/marolive/custom-udi-java8:1.0.0
+      mountSources: true
+      sourceMapping: /projects
+      memoryLimit: 10Gi
+      memoryRequest: 5Gi
+      cpuLimit: "2"
+      cpuRequest: "0.5"
+      env:
+        - name: PODMAN_IGNORE_CGROUPSV1_WARNING
+          value: "true"
+        - name: CONTAINERS_STORAGE_CONF
+          value: /home/user/persistent/.containers-storage.conf
+        - name: CONTAINERS_STORAGE
+          value: /home/user/persistent/.containers-storage
+        - name: PODMAN_HOME
+          value: /home/user/persistent/.podman
+        - name: MAVEN_OPTS
+          value: "-Dmaven.repo.local=/home/user/persistent/.m2/repository -Duser.home=/home/user/persistent"
+        - name: MAVEN_USER_HOME
+          value: /home/user/persistent
+        - name: GRADLE_USER_HOME
+          value: "/home/user/persistent/.gradle"
+        - name: XDG_CONFIG_HOME
+          value: /home/user/persistent/.config
+        - name: XDG_DATA_HOME
+          value: /home/user/persistent/.local/share
+        - name: XDG_CACHE_HOME
+          value: /home/user/persistent/.cache
+        - name: VSCODE_AGENT_FOLDER
+          value: /home/user/persistent/.vscode-server
+        - name: ARTIFACTORY_BASEURL
+          value: "https://<ARTIFACTORYREPOSITORY>/artifactory/public-yum-central"
+        - name: ARTIFACTORY_MAVEN_BASEURL
+          value: "https://<ARTIFACTORYREPOSITORY>/artifactory/public-maven-central/"
+      volumeMounts:
+        - name: persistent-storage
+          path: /home/user/persistent
+      endpoints:
+        - name: http-8080
+          targetPort: 8080
+          protocol: http
+          exposure: public
+  - name: persistent-storage
+    volume:
+      size: 10Gi
