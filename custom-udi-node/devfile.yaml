@@ -1,0 +1,55 @@
+schemaVersion: 2.2.2
+metadata:
+  name: custom-udi-node
+  displayName: "Node 22 / 24 / 25 (nodeuse para trocar de versao)"
+  description: "Imagem unica com Node 22.23.1, 24.18.0 e 25.9.0; troca de versao com nodeuse"
+  version: 1.0.0
+  tags: ["nodejs", "npm"]
+components:
+  - name: tools
+    container:
+      image: quay.io/marolive/custom-udi-node:1.0.0
+      mountSources: true
+      sourceMapping: /projects
+      memoryLimit: 10Gi
+      memoryRequest: 5Gi
+      cpuLimit: "2"
+      cpuRequest: "0.5"
+      env:
+        - name: PODMAN_IGNORE_CGROUPSV1_WARNING
+          value: "true"
+        - name: CONTAINERS_STORAGE_CONF
+          value: /home/user/persistent/.containers-storage.conf
+        - name: CONTAINERS_STORAGE
+          value: /home/user/persistent/.containers-storage
+        - name: PODMAN_HOME
+          value: /home/user/persistent/.podman
+        - name: NODE_STATE_DIR
+          value: /home/user/persistent/.node
+        - name: NPM_CONFIG_CACHE
+          value: "/home/user/persistent/.npm"
+        - name: NPM_CONFIG_USERCONFIG
+          value: "/home/user/persistent/.npmrc"
+        - name: XDG_CONFIG_HOME
+          value: /home/user/persistent/.config
+        - name: XDG_DATA_HOME
+          value: /home/user/persistent/.local/share
+        - name: XDG_CACHE_HOME
+          value: /home/user/persistent/.cache
+        - name: VSCODE_AGENT_FOLDER
+          value: /home/user/persistent/.vscode-server
+        - name: ARTIFACTORY_BASEURL
+          value: "https://<ARTIFACTORYREPOSITORY>/artifactory/public-yum-central"
+        - name: ARTIFACTORY_NPM_BASEURL
+          value: "https://<ARTIFACTORYREPOSITORY>/artifactory/public-npm-central/"
+      volumeMounts:
+        - name: persistent-storage
+          path: /home/user/persistent
+      endpoints:
+        - name: http-3000
+          targetPort: 3000
+          protocol: http
+          exposure: public
+  - name: persistent-storage
+    volume:
+      size: 10Gi
