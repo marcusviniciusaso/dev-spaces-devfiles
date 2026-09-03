@@ -1,38 +1,57 @@
 schemaVersion: 2.2.2
 metadata:
-  generateName: workspace-python
-  displayName: Python Multi-Version (pip / virtualenv)
-  description: Python com setup completo para DevSpaces
-  version: 2.0.2
-  tags:
-    - python
-    - pip
-    - virtualenv
+  name: custom-udi-python
+  displayName: "Python 3.9 / 3.12 / 3.13 / 3.14 (pyuse para trocar de versao)"
+  description: "Imagem unica com Python 3.9, 3.12, 3.13 e 3.14; troca de versao com pyuse"
+  version: 2.1.0
+  tags: ["python", "pip", "virtualenv"]
 components:
   - name: tools
     container:
-      image: quay.io/marolive/custom-udi-python:2.0.2
-      memoryLimit: 2Gi
-      memoryRequest: 1Gi
-      cpuLimit: '2'
-      cpuRequest: '1'
+      image: quay.io/marolive/custom-udi-python:2.1.0
       mountSources: true
       sourceMapping: /projects
-      volumeMounts:
-        - name: venv
-          path: /home/user/.venv
-        - name: container-storage
-          path: /home/user/.local/share/containers-vfs
+      memoryLimit: 10Gi
+      memoryRequest: 5Gi
+      cpuLimit: "2"
+      cpuRequest: "0.5"
       env:
         - name: PODMAN_IGNORE_CGROUPSV1_WARNING
-          value: 'true'
-        - name: NEXUS_BASEURL
-          value: "https://<NEXUSREPOSITORY>:8443/repository/public-yum-central"
-        - name: NEXUS_PYPI_BASEURL
-          value: "https://<NEXUSREPOSITORY>:8443/repository/public-pypi-central/simple"
-  - name: venv
+          value: "true"
+        - name: CONTAINERS_STORAGE_CONF
+          value: /home/user/persistent/.containers-storage.conf
+        - name: CONTAINERS_STORAGE
+          value: /home/user/persistent/.containers-storage
+        - name: PODMAN_HOME
+          value: /home/user/persistent/.podman
+        - name: PYTHON_STATE_DIR
+          value: /home/user/persistent/.python
+        - name: PIP_CONFIG_FILE
+          value: /home/user/persistent/.pip/pip.conf
+        - name: PIP_CACHE_DIR
+          value: /home/user/persistent/.cache/pip
+        - name: PYTHONUSERBASE
+          value: /home/user/persistent/.local
+        - name: XDG_CONFIG_HOME
+          value: /home/user/persistent/.config
+        - name: XDG_DATA_HOME
+          value: /home/user/persistent/.local/share
+        - name: XDG_CACHE_HOME
+          value: /home/user/persistent/.cache
+        - name: VSCODE_AGENT_FOLDER
+          value: /home/user/persistent/.vscode-server
+        - name: ARTIFACTORY_BASEURL
+          value: "https://<ARTIFACTORYREPOSITORY>/artifactory/public-yum-central"
+        - name: ARTIFACTORY_PYPI_BASEURL
+          value: "https://<ARTIFACTORYREPOSITORY>/artifactory/public-pypi-central"
+      volumeMounts:
+        - name: persistent-storage
+          path: /home/user/persistent
+      endpoints:
+        - name: http-8000
+          targetPort: 8000
+          protocol: http
+          exposure: public
+  - name: persistent-storage
     volume:
-      size: 1G
-  - name: container-storage
-    volume:
-      size: 1G
+      size: 10Gi
