@@ -1,9 +1,9 @@
 schemaVersion: 2.2.2
 metadata:
-  name: custom-udi-java8
+  generateName: custom-udi-java8
   displayName: "Java 8 (Maven 3.9.9 / Gradle 7.6.6 / Spring Boot CLI 2.7.18)"
   description: "Java 8 para Maven 3.9.9, Gradle 7.6.6, Spring Boot CLI 2.7.18"
-  version: 1.0.0
+  version: 1.0.1
   tags: ["java", "spring", "maven", "gradle"]
 components:
   - name: tools
@@ -45,11 +45,6 @@ components:
       volumeMounts:
         - name: persistent-storage
           path: /home/user/persistent
-      endpoints:
-        - name: http-8080
-          targetPort: 8080
-          protocol: http
-          exposure: public
   - name: persistent-storage
     volume:
       size: 10Gi

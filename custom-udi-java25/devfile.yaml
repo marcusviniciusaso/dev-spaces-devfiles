@@ -1,9 +1,9 @@
 schemaVersion: 2.2.2
 metadata:
-  name: custom-udi-java25
+  generateName: custom-udi-java25
   displayName: "Java 25 (Maven 3.9.12 / Gradle 9.3.1 / Spring Boot CLI 4.0.3)"
   description: "Java 25 para Maven 3.9.12, Gradle 9.3.1, Spring Boot CLI 4.0.3"
-  version: 1.1.1
+  version: 1.1.2
   tags: ["java", "spring", "maven", "gradle"]
 components:
   - name: tools
@@ -45,11 +45,6 @@ components:
       volumeMounts:
         - name: persistent-storage
           path: /home/user/persistent
-      endpoints:
-        - name: http-8080
-          targetPort: 8080
-          protocol: http
-          exposure: public
   - name: persistent-storage
     volume:
       size: 10Gi
