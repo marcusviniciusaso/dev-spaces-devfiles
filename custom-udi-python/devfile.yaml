@@ -47,11 +47,6 @@ components:
       volumeMounts:
         - name: persistent-storage
           path: /home/user/persistent
-      endpoints:
-        - name: http-8000
-          targetPort: 8000
-          protocol: http
-          exposure: public
   - name: persistent-storage
     volume:
       size: 10Gi
