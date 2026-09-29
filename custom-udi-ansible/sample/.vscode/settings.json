@@ -1,0 +1,18 @@
+{
+  "workbench.startupEditor": "readme",
+  "workbench.editorAssociations": {
+    "**/README.md": "vscode.markdown.preview.editor"
+  },
+  "ansible.python.interpreterPath": "/opt/ansible/bin/python",
+  "ansible.ansible.path": "/usr/local/bin/ansible",
+  "ansible.validation.enabled": true,
+  "ansible.validation.lint.enabled": true,
+  "ansible.validation.lint.path": "/usr/local/bin/ansible-lint",
+  "ansible.executionEnvironment.enabled": false,
+  "files.associations": {
+    "**/playbooks/**/*.yml": "ansible",
+    "**/roles/**/*.yml": "ansible",
+    "**/inventory/**/*.yml": "yaml"
+  },
+  "redhat.telemetry.enabled": false
+}

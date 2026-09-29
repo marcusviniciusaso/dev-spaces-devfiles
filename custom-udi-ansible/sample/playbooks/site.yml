@@ -1,0 +1,6 @@
+---
+- name: Hello Ansible no Dev Spaces
+  hosts: local
+  gather_facts: true
+  roles:
+    - role: hello

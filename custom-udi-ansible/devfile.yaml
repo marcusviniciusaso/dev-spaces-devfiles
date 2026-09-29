@@ -1,37 +1,62 @@
 schemaVersion: 2.2.2
 metadata:
   generateName: custom-udi-ansible
-  displayName: "Ansible (core 2.19.8), ansible-lint 26.4.0, ansible-navigator 26.4.0, molecule 26.4.0"
-  description: "Container com tools para Ansible"
-  version: 1.0.4
-  tags: ["ansible", "ansible-lint", "ansible-navigator", "molecule"]
+  displayName: "Ansible"
+  description: "Ambiente para automação com Ansible - criação, validação e execução de playbooks"
+  version: 2.0.0
+  tags: ["ansible", "ansible-lint", "ansible-navigator", "ansible-builder"]
 components:
   - name: tools
     container:
-      image: quay.io/marolive/custom-udi-ansible:1.0.4
+      image: quay.io/marolive/custom-udi-ansible:2.0.0
       mountSources: true
       sourceMapping: /projects
-      memoryRequest: 256M
-      memoryLimit: 6Gi
-      cpuRequest: 250m
-      cpuLimit: 2000m
+      memoryLimit: 10Gi
+      memoryRequest: 5Gi
+      cpuLimit: "2"
+      cpuRequest: "0.5"
       env:
-        - name: ANSIBLE_COLLECTIONS_PATH
-          value: ~/.ansible/collections:/usr/share/ansible/collections
-        - name: KUBEDOCK_ENABLED
-          value: 'true'
-        - name: DOCKER_HOST
-          value: 'tcp://127.0.0.1:2475'
-        - name: TESTCONTAINERS_RYUK_DISABLED
-          value: 'true'
-        - name: TESTCONTAINERS_CHECKS_DISABLE
-          value: 'true'
-        - name: NEXUS_BASEURL
-          value: "https://<NEXUSREPOSITORY>:8443/repository/public-yum-central"
-        - name: "PODMAN_IGNORE_CGROUPSV1_WARNING"
+        - name: PODMAN_IGNORE_CGROUPSV1_WARNING
           value: "true"
-      endpoints:
-        - exposure: none
-          name: kubedock
-          protocol: tcp
-          targetPort: 2475
+        - name: CONTAINERS_STORAGE_CONF
+          value: /home/user/persistent/.containers-storage.conf
+        - name: CONTAINERS_STORAGE
+          value: /home/user/persistent/.containers-storage
+        - name: PODMAN_HOME
+          value: /home/user/persistent/.podman
+        - name: KUBECONFIG
+          value: /home/user/persistent/.kube/config
+        - name: XDG_CONFIG_HOME
+          value: /home/user/persistent/.config
+        - name: XDG_DATA_HOME
+          value: /home/user/persistent/.local/share
+        - name: XDG_CACHE_HOME
+          value: /home/user/persistent/.cache
+        - name: VSCODE_AGENT_FOLDER
+          value: /home/user/persistent/.vscode-server
+        - name: ANSIBLE_HOME
+          value: /home/user/persistent/.ansible
+        - name: ANSIBLE_COLLECTIONS_PATH
+          value: /home/user/persistent/.ansible/collections:/usr/share/ansible/collections
+        - name: AAP_CONTROLLER_URL
+          value: "https://<AAP_CONTROLLER_URL>"
+        - name: AUTOMATION_HUB_URL
+          value: "https://<AUTOMATION_HUB_URL>"
+        - name: AUTOMATION_HUB_AUTH_URL
+          value: ""
+        - name: AUTOMATION_HUB_REGISTRY
+          value: "<AUTOMATION_HUB_REGISTRY>"
+        - name: ANSIBLE_NAVIGATOR_EXECUTION_ENVIRONMENT_IMAGE
+          value: "registry.redhat.io/ansible-automation-platform-25/ee-minimal-rhel9:latest"
+        - name: ANSIBLE_NAVIGATOR_PULL_POLICY
+          value: missing
+        - name: ANSIBLE_NAVIGATOR_CONTAINER_ENGINE
+          value: podman
+        - name: ARTIFACTORY_BASEURL
+          value: "https://<ARTIFACTORYREPOSITORY>/artifactory/public-yum-central"
+      volumeMounts:
+        - name: persistent-storage
+          path: /home/user/persistent
+  - name: persistent-storage
+    volume:
+      size: 10Gi

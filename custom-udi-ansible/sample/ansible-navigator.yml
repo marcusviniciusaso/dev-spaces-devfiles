@@ -1,0 +1,10 @@
+---
+# A imagem do Execution Environment, a pull policy e o container engine vem das
+# variaveis ANSIBLE_NAVIGATOR_* definidas no devfile.
+ansible-navigator:
+  mode: stdout
+  playbook-artifact:
+    enable: false
+  logging:
+    level: warning
+    file: /tmp/ansible-navigator.log

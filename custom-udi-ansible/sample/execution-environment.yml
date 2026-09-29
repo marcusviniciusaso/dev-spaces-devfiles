@@ -1,0 +1,23 @@
+---
+# Exemplo de Execution Environment (ansible-builder v3).
+# A imagem base ja traz ansible-core e ansible-runner; so as collections de
+# requirements.yml sao adicionadas, baixadas do Automation Hub com as
+# credenciais gravadas pelo devspaces-setup (passadas como --build-arg).
+version: 3
+
+images:
+  base_image:
+    name: registry.redhat.io/ansible-automation-platform-25/ee-minimal-rhel9:latest
+
+dependencies:
+  galaxy: requirements.yml
+
+additional_build_steps:
+  prepend_galaxy:
+    - ARG ANSIBLE_GALAXY_SERVER_LIST
+    - ARG ANSIBLE_GALAXY_SERVER_AUTOMATION_HUB_URL
+    - ARG ANSIBLE_GALAXY_SERVER_AUTOMATION_HUB_TOKEN
+    - ARG ANSIBLE_GALAXY_SERVER_AUTOMATION_HUB_AUTH_URL
+
+options:
+  package_manager_path: /usr/bin/microdnf

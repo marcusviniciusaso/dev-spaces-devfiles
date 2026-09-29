@@ -1,0 +1,5 @@
+{{ hello_message }}
+
+Gerado por Ansible em {{ ansible_facts['date_time']['iso8601'] }}
+Host: {{ ansible_facts['hostname'] }}
+Sistema: {{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_version'] }}

@@ -1,0 +1,17 @@
+---
+- name: Exibir a mensagem de boas-vindas
+  ansible.builtin.debug:
+    msg: "{{ hello_message }}"
+
+- name: Exibir informacoes do ambiente
+  ansible.builtin.debug:
+    msg:
+      - "Host: {{ ansible_facts['hostname'] }}"
+      - "Sistema: {{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_version'] }}"
+      - "Python: {{ ansible_facts['python_version'] }}"
+
+- name: Gerar arquivo a partir do template
+  ansible.builtin.template:
+    src: hello.txt.j2
+    dest: "{{ hello_output_file }}"
+    mode: "0644"
