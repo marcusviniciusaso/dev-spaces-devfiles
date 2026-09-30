@@ -92,8 +92,7 @@ As extensões são sugeridas a partir de `.vscode/extensions.json`.
 
 ```
 .vscode/
-├── extensions.json          # Extensões recomendadas
-└── settings.json            # Interpretador do Ansible, lint e abertura deste README
+└── extensions.json          # Extensões recomendadas
 .ansible-lint                # Perfil production
 ansible.cfg                  # Inventário e roles_path do projeto
 ansible-navigator.yml        # Saída em stdout; imagem do EE vem do devfile
