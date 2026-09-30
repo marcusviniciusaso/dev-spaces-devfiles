@@ -81,7 +81,7 @@ As extensões são sugeridas a partir de `.vscode/extensions.json`.
 | `ansible-playbook playbooks/site.yml --check --diff` | Simula a execução sem alterar nada |
 | `ansible-navigator run playbooks/site.yml --ee true` | Executa o playbook dentro do Execution Environment |
 | `ansible-navigator run playbooks/site.yml --ee false` | Executa com o navigator, sem container |
-| `ansible-navigator collections --ee true -m stdout` | Lista as collections do Execution Environment |
+| `ansible-navigator exec --ee true -- ansible-galaxy collection list` | Lista as collections do Execution Environment |
 | `ansible-galaxy collection install -r requirements.yml` | Instala as collections do Automation Hub |
 | `ansible-galaxy collection list` | Lista as collections instaladas |
 | `ansible-doc <módulo>` | Mostra a documentação de um módulo (ex.: `ansible-doc ansible.builtin.copy`) |
@@ -133,13 +133,14 @@ Para construir um EE com as collections de `requirements.yml`:
 
 ```bash
 ansible-builder build -t meu-ee:1.0 \
-  --build-arg ANSIBLE_GALAXY_SERVER_LIST \
-  --build-arg ANSIBLE_GALAXY_SERVER_AUTOMATION_HUB_URL \
-  --build-arg ANSIBLE_GALAXY_SERVER_AUTOMATION_HUB_TOKEN \
-  --build-arg ANSIBLE_GALAXY_SERVER_AUTOMATION_HUB_AUTH_URL
+  --build-arg ANSIBLE_GALAXY_SERVER_LIST="$ANSIBLE_GALAXY_SERVER_LIST" \
+  --build-arg ANSIBLE_GALAXY_SERVER_AUTOMATION_HUB_URL="$ANSIBLE_GALAXY_SERVER_AUTOMATION_HUB_URL" \
+  --build-arg ANSIBLE_GALAXY_SERVER_AUTOMATION_HUB_TOKEN="$ANSIBLE_GALAXY_SERVER_AUTOMATION_HUB_TOKEN" \
+  --build-arg ANSIBLE_GALAXY_SERVER_AUTOMATION_HUB_AUTH_URL="$ANSIBLE_GALAXY_SERVER_AUTOMATION_HUB_AUTH_URL"
 ```
 
-Os `--build-arg` sem valor repassam as variáveis gravadas pelo `devspaces-setup`. Para gerar só o
+Os `--build-arg` repassam as variáveis gravadas pelo `devspaces-setup` (o valor precisa ser
+explícito: com podman, `--build-arg VAR` sem `=` não lê o ambiente). Para gerar só o
 contexto de build, sem construir, use `ansible-builder create`.
 
 > Pull e push de imagens só são permitidos nos registries liberados no ambiente.

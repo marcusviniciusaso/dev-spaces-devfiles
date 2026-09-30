@@ -56,7 +56,7 @@ ansible-galaxy collection list | grep -E 'ansible\.(posix|utils)'
 ```bash
 podman pull "$ANSIBLE_NAVIGATOR_EXECUTION_ENVIRONMENT_IMAGE"
 ansible-navigator run playbooks/site.yml --ee true
-ansible-navigator collections --ee true -m stdout | head
+ansible-navigator exec --ee true -- ansible-galaxy collection list | head
 ```
 
 ---
@@ -67,10 +67,10 @@ ansible-navigator collections --ee true -m stdout | head
 ansible-builder create
 ls context/                         # Containerfile + _build/
 ansible-builder build -t ee-teste:1.0 \
-  --build-arg ANSIBLE_GALAXY_SERVER_LIST \
-  --build-arg ANSIBLE_GALAXY_SERVER_AUTOMATION_HUB_URL \
-  --build-arg ANSIBLE_GALAXY_SERVER_AUTOMATION_HUB_TOKEN \
-  --build-arg ANSIBLE_GALAXY_SERVER_AUTOMATION_HUB_AUTH_URL
+  --build-arg ANSIBLE_GALAXY_SERVER_LIST="$ANSIBLE_GALAXY_SERVER_LIST" \
+  --build-arg ANSIBLE_GALAXY_SERVER_AUTOMATION_HUB_URL="$ANSIBLE_GALAXY_SERVER_AUTOMATION_HUB_URL" \
+  --build-arg ANSIBLE_GALAXY_SERVER_AUTOMATION_HUB_TOKEN="$ANSIBLE_GALAXY_SERVER_AUTOMATION_HUB_TOKEN" \
+  --build-arg ANSIBLE_GALAXY_SERVER_AUTOMATION_HUB_AUTH_URL="$ANSIBLE_GALAXY_SERVER_AUTOMATION_HUB_AUTH_URL"
 rm -rf context
 ```
 
