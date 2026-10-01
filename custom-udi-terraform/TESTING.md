@@ -23,7 +23,10 @@ podman-compose --version     # ferramenta da base, intacta
 
 ## 2. tfenv
 
+Fora do sample: dentro dele, o `.terraform-version` (1.14.9) tem prioridade sobre o `tfenv use`.
+
 ```bash
+cd ~
 for v in 1.11.4 1.12.2 1.13.5 1.14.9; do tfenv use "$v" >/dev/null && terraform version | head -1; done
 tfenv use 1.12.2 && terraform version      # 1.12.2
 cd /projects/dev-spaces-devfiles/custom-udi-terraform/sample
@@ -84,18 +87,18 @@ source ~/.bashrc && go env GOPROXY          # file:///opt/terratest/goproxy,http
 
 ---
 
-## 7. Extensão
+## 7. Persistência (pause/resume)
 
-Abra `sample/main.tf`: hover em `random_pet` mostra a documentação, e `Ctrl + Space` dentro de um
-bloco `resource` sugere os argumentos.
-
----
-
-## 8. Persistência (pause/resume)
-
-Após `tfenv use 1.13.5`, pausar e retomar o workspace:
+Fora do sample (dentro dele vale o `.terraform-version`):
 
 ```bash
-terraform version                                  # 1.13.5 (fora do sample)
+cd ~ && tfenv use 1.13.5 && terraform version      # 1.13.5
+```
+
+Pausar e retomar o workspace e, num novo terminal:
+
+```bash
+cd ~ && terraform version                          # 1.13.5
+cat /home/user/persistent/.tfenv/version           # 1.13.5
 ls /home/user/persistent/.terraform.d/plugin-cache # providers em cache
 ```
