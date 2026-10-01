@@ -1,0 +1,54 @@
+schemaVersion: 2.2.2
+metadata:
+  generateName: custom-udi-terraform
+  displayName: "Terraform"
+  description: "Ambiente de desenvolvimento Terraform com suporte às versões 1.12, 1.13 e 1.14 via tfenv para gerenciamento de versões e provisionamento de infraestrutura como código"
+  version: 1.0.0
+  tags: ["terraform", "tfenv", "tflint", "terraform-docs", "terratest"]
+components:
+  - name: tools
+    container:
+      image: quay.io/marolive/custom-udi-terraform:1.0.0
+      mountSources: true
+      sourceMapping: /projects
+      memoryLimit: 10Gi
+      memoryRequest: 5Gi
+      cpuLimit: "2"
+      cpuRequest: "0.5"
+      env:
+        - name: PODMAN_IGNORE_CGROUPSV1_WARNING
+          value: "true"
+        - name: CONTAINERS_STORAGE_CONF
+          value: /home/user/persistent/.containers-storage.conf
+        - name: CONTAINERS_STORAGE
+          value: /home/user/persistent/.containers-storage
+        - name: PODMAN_HOME
+          value: /home/user/persistent/.podman
+        - name: KUBECONFIG
+          value: /home/user/persistent/.kube/config
+        - name: XDG_CONFIG_HOME
+          value: /home/user/persistent/.config
+        - name: XDG_DATA_HOME
+          value: /home/user/persistent/.local/share
+        - name: XDG_CACHE_HOME
+          value: /home/user/persistent/.cache
+        - name: VSCODE_AGENT_FOLDER
+          value: /home/user/persistent/.vscode-server
+        - name: TF_PLUGIN_CACHE_DIR
+          value: /home/user/persistent/.terraform.d/plugin-cache
+        - name: GOMODCACHE
+          value: /home/user/persistent/go/pkg/mod
+        - name: ARTIFACTORY_TERRAFORM_URL
+          value: "https://<ARTIFACTORY_TERRAFORM_URL>"
+        - name: ARTIFACTORY_GO_URL
+          value: "https://<ARTIFACTORY_GO_URL>"
+        - name: ARTIFACTORY_TERRAFORM_RELEASES_URL
+          value: ""
+        - name: ARTIFACTORY_BASEURL
+          value: "https://<ARTIFACTORYREPOSITORY>/artifactory/public-yum-central"
+      volumeMounts:
+        - name: persistent-storage
+          path: /home/user/persistent
+  - name: persistent-storage
+    volume:
+      size: 10Gi

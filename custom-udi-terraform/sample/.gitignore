@@ -1,0 +1,17 @@
+# Diretório de trabalho do Terraform
+.terraform/
+
+# State local (inclui os workspaces usados pelo terratest)
+*.tfstate
+*.tfstate.*
+terraform.tfstate.d/
+
+# Logs e planos
+crash.log
+crash.*.log
+*.tfplan
+
+# Variáveis com dados sensíveis
+*.tfvars
+*.tfvars.json
+!*.tfvars.example
