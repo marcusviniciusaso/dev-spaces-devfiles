@@ -42,7 +42,7 @@ cd ~ && tfenv use 1.14.9
 cd /projects/dev-spaces-devfiles/custom-udi-terraform/sample
 terraform init               # providers vêm de /usr/share/terraform/plugins
 terraform fmt -check -recursive
-terraform validate
+terraform validate           # Success! The configuration is valid.
 tflint
 terraform plan
 terraform apply -auto-approve
@@ -54,8 +54,23 @@ terraform destroy -auto-approve
 
 ## 4. terraform-docs
 
+O `terraform-docs` lê variáveis, outputs, providers e resources dos `.tf` e reescreve a tabela
+entre `<!-- BEGIN_TF_DOCS -->` e `<!-- END_TF_DOCS -->` do `README.md`.
+
 ```bash
-terraform-docs .             # README.md sem diff (git diff --exit-code README.md)
+cd /projects/dev-spaces-devfiles/custom-udi-terraform/sample
+terraform-docs . && git diff --exit-code README.md   # sem diff: a documentação já está em dia
+
+cat > docs_demo.tf <<'TF'
+output "demo" {
+  description = "Output temporário para testar o terraform-docs."
+  value       = "ok"
+}
+TF
+terraform-docs .
+git diff README.md            # nova linha "demo" na tabela de Outputs
+
+rm docs_demo.tf && git checkout README.md
 ```
 
 ---
@@ -81,7 +96,7 @@ Com um proxy Go público no lugar do repositório corporativo (qualquer usuário
 
 ```bash
 ARTIFACTORY_GO_URL=https://proxy.golang.org devspaces-setup
-ls -l /home/user/persistent/.terraform.d/   # .netrc e devspaces.env com modo 600
+ls -lah /home/user/persistent/.terraform.d/   # .netrc e devspaces.env com modo 600
 source ~/.bashrc && go env GOPROXY          # file:///opt/terratest/goproxy,https://proxy.golang.org
 ```
 

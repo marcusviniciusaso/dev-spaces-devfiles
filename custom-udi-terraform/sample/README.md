@@ -12,9 +12,6 @@ HashiCorp Terraform do VS Code. A partir dele você pode:
 - Gerar a documentação do módulo com `terraform-docs`
 - Testar a infraestrutura com `terratest` (Go)
 
-O ambiente é idêntico para todos os desenvolvedores, independentemente da máquina ou do sistema
-operacional.
-
 ---
 
 ## Quick Start
