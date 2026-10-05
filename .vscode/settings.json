@@ -1,7 +1,4 @@
 {
-    "workbench.startupEditor": "newUntitledFile",
-    "workbench.editorAssociations": {
-    "**/README.md": "vscode.markdown.preview.editor"
-    },
+    "workbench.startupEditor": "terminal",
     "redhat.telemetry.enabled": false
 }
