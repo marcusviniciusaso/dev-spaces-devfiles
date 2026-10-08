@@ -11,10 +11,10 @@ components:
       image: quay.io/marolive/custom-udi-java25:1.2.1
       mountSources: true
       sourceMapping: /projects
-      memoryLimit: 10Gi
-      memoryRequest: 7Gi
-      cpuLimit: "2"
-      cpuRequest: "0.5"
+      memoryLimit: 20Gi
+      memoryRequest: 10Gi
+      cpuLimit: "10"
+      cpuRequest: "5"
       env:
         - name: PODMAN_IGNORE_CGROUPSV1_WARNING
           value: "true"
