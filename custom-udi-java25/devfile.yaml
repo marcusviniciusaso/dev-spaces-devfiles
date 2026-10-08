@@ -12,7 +12,7 @@ components:
       mountSources: true
       sourceMapping: /projects
       memoryLimit: 10Gi
-      memoryRequest: 5Gi
+      memoryRequest: 7Gi
       cpuLimit: "2"
       cpuRequest: "0.5"
       env:
