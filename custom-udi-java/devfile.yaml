@@ -3,12 +3,12 @@ metadata:
   generateName: custom-udi-java
   displayName: "Java 8/11/17/21/25 (default 25) / Maven 3.9.12 / Gradle 7.6.6, 8.14.4, 9.3.1 / Spring Boot CLI 2.7.18, 4.0.3"
   description: "Java multi versão (8, 11, 17, 21 e 25) com troca por use-java e with-java, Maven, Gradle e Spring Boot CLI."
-  version: 1.0.0
+  version: 1.0.1
   tags: ["java", "spring", "maven", "gradle"]
 components:
   - name: tools
     container:
-      image: quay.io/marolive/custom-udi-java:1.0.0
+      image: quay.io/marolive/custom-udi-java:1.0.1
       mountSources: true
       sourceMapping: /projects
       memoryLimit: 10Gi
