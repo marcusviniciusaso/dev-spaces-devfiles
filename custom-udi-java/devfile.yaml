@@ -11,8 +11,8 @@ components:
       image: quay.io/marolive/custom-udi-java:1.0.1
       mountSources: true
       sourceMapping: /projects
-      memoryLimit: 10Gi
-      memoryRequest: 5Gi
+      memoryLimit: 10GiB
+      memoryRequest: 5GiB
       cpuLimit: "2"
       cpuRequest: "0.5"
       env:
